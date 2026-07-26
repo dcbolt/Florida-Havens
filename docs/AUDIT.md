@@ -146,6 +146,14 @@ pages is pure overhead.
 Images are also the wrong formats: **2,772 PNG/JPG references against 53
 WebP/AVIF**.
 
+> **Scope of that claim.** It is a count of *references in the markup*, not a
+> measurement of *bytes served*. Wix's image CDN can transcode on delivery, so a
+> `.png` URL does not prove a PNG arrived. The honest version is: the site asks
+> for legacy formats by default, and nothing in the HTML indicates modern-format
+> delivery. Whether that costs real bytes is **unmeasured** — it needs the actual
+> response `Content-Type` and `Content-Length` per image, which is assigned but
+> not yet done. Do not quote this as a payload figure.
+
 Measured result of the rebuild:
 
 | Page | Live gzip | Rebuild gzip | Reduction |
