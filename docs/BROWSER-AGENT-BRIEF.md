@@ -214,22 +214,123 @@ ATTRACTIONS · GUEST RESOURCES · CONTACT**
 > PROPERTIES". Do not, however, *guess* at a colour — leaving it as-inherited is
 > correct; picking a new one is not.
 
-**Breakpoints:** Studio uses responsive breakpoints (Desktop / Tablet / Mobile).
-Because the nav is a hamburger at *every* breakpoint, there may be only one menu
-instance and one set of Text elements — in which case the style change applies
-everywhere and there is nothing to repeat. Check Tablet and Mobile after HOME is
-done and **report whether the change carried or had to be re-applied per
-breakpoint.** That single answer decides whether the remaining six labels are 6
-edits or 18.
+### Two traps found while doing this, both confirmed 2026-07-26
 
-The 64 `StylableHorizontalMenu` references in the live HTML are most likely this
+**1. The editor panel goes stale and lies to you.** After a style-preset change,
+the Font field can keep showing a wrong value (observed: `Futura`) and refuse to
+update no matter how many times you reselect — while the *saved* data is already
+correct. Closing the panel does not clear it; a **full reload of the editor page**
+does, after which the panel shows true state. Cost real time before the reload was
+found.
+
+The rule that follows: **never trust the editor panel as evidence.** Verify in the
+published DOM, every time. That is what 1c is for.
+
+**2. Swapping the preset changes the colour, not just the tag.** Heading 1's
+default text colour on this site is **white**; Paragraph 2's is **black**. Nobody
+sets black — the label inherits it from the new preset the moment you switch. On a
+dark menu that means black-on-black and an **invisible label**, which is a real
+visible regression, not a cosmetic one.
+
+Fix it the way it was fixed here: open the colour picker, confirm on an *untouched
+sibling* label that no theme swatch is actively selected (so its white is
+inherited rather than chosen), then set white explicitly on the ones you changed
+to match. That is matching an observed sibling value, which is allowed. Inventing
+a colour is still not.
+
+> **Expect the same trap in reverse in Task 1b.** Promoting a heading *to*
+> Heading 1 pulls Heading 1's defaults *in* — on this site that is **white text
+> at an 82 px default**. A page headline promoted to `<h1>` may jump to 82 px
+> and/or turn white and vanish against a light background. Note each headline's
+> font size and colour **before** you change it, and restore both after. Same
+> discipline as 1a, opposite direction.
+
+### Breakpoints: Mobile is a different widget, not a rescale
+
+This editor exposes **two** breakpoints, Desktop and Mobile. There is no Tablet
+toggle.
+
+The Desktop fix does **not** carry to Mobile, because Mobile is not the same
+component reflowed — it is a structurally separate widget (**Mobile Menu Box** vs
+Desktop's **Hamburger Menu Container**) with its own independent text elements,
+still on Heading 1 / black.
+
+It is not even the same seven items. Mobile shows **HOME, ABOUT, PROPERTIES
+(expandable), LOCAL ATTRACTIONS (expandable), GUEST RESOURCES, CONTACT** — six at
+top level, with **BOOK YOUR STAY absent**, so it is nested inside one of the
+expandable items rather than mirrored 1:1.
+
+**Before editing Mobile, measure whether it matters — see Task 1d.** Do not
+assume it is "the same seven again"; it is an unknown-shape menu, and it may not
+even reach the crawler.
+
+The 64 `StylableHorizontalMenu` references in the live HTML are most likely the
 hamburger widget itself, not a separate mobile menu as earlier docs guessed.
+
+## 1d. Does the Mobile menu even reach Google? Measure before editing it
+
+**Do this before touching the Mobile Menu Box.** It is a two-minute test and it
+decides whether that widget is on the critical path or a footnote.
+
+### Why it is genuinely open
+
+The original census counted **exactly 7** `<h1>` per page from a plain server
+fetch with a desktop user-agent and no JavaScript. After fixing only the seven
+**Desktop** labels, the homepage reports **0**. If the Mobile menu's six labels
+were also in that same server HTML as `<h1>`, the original count would have been
+13, not 7.
+
+So one of two things is true, and they have opposite consequences:
+
+- **Wix serves breakpoint-specific markup.** The desktop fetch got desktop markup
+  only; a mobile fetch would get the Mobile Menu Box and its own `<h1>`s. Since
+  **Google crawls mobile-first**, the Mobile widget would then be the version that
+  actually matters and P0.1 is only half done.
+- **The Mobile widget's labels are not `<h1>`s**, or are not server-rendered at
+  all. Then it is cosmetic-only and can wait.
+
+### The test
+
+In DevTools on the **published** site: open **Network conditions** → set
+**User agent** to a phone (e.g. Chrome on Android), *and* switch device emulation
+to a mobile viewport. **Hard-reload.** Then:
+
+```js
+[...document.querySelectorAll('h1')].map(h => h.innerText.trim())
+```
+
+Also worth capturing, since it distinguishes "not rendered" from "rendered but
+not h1":
+
+```js
+[...document.querySelectorAll('h1,h2,h3,h4,h5,h6')]
+  .filter(e => /^(HOME|ABOUT|PROPERTIES|LOCAL ATTRACTIONS|GUEST RESOURCES|CONTACT)$/
+                 .test(e.innerText.trim()))
+  .map(e => e.tagName + ' ' + e.innerText.trim())
+```
+
+### How to read it
+
+| Mobile-UA result | Meaning | Action |
+|---|---|---|
+| Nav labels appear as `H1` | Mobile markup is what Google sees; P0.1 is half done | **Fix the Mobile widget now** — it outranks the rest of this brief |
+| Nav labels appear as `H2`–`H6` | Wrong outline but not competing for page subject | Fix after Tasks 2–5 |
+| Nav labels absent entirely | Not server-rendered; crawler never sees them | **Cosmetic only** — schedule it, do not prioritise it |
+
+Report the raw output either way. **This also corrects a scope limit in the
+audit:** the 77-page census was taken with a desktop user-agent, so every `<h1>`
+count in `AUDIT.md` describes the **desktop** variant. Whether mobile markup
+differs was never measured. Your result settles it.
 
 ## 1b. Give each page exactly one real `<h1>`
 
 After 1a there will be pages with **zero** `<h1>`. Promote the existing main
 headline on each — do not write new copy, do not move anything. Just change the
 tag/style of the headline that is already there.
+
+> **Read the Task 1a colour trap first.** Promoting *to* Heading 1 pulls in
+> Heading 1's white / 82 px defaults, so a promoted headline can jump size or turn
+> white and disappear. Record each headline's size and colour before changing it.
 
 **Seven pages need an `<h1>` promoted** (they currently have none of their own):
 

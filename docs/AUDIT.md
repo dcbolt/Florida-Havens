@@ -69,6 +69,30 @@ primary topic as the navigation menu rather than its actual subject. This is
 the single highest-leverage fix on the site and it is a styling change, not a
 content change — the nav can look identical.
 
+> ### Scope limit: this census is the desktop variant
+>
+> Every count above was taken with a **desktop user-agent** and no JavaScript.
+> Work in the Studio editor on 2026-07-26 established that Desktop and Mobile are
+> **structurally different widgets** — `Hamburger Menu Container` vs
+> `Mobile Menu Box`, each with its own independent text elements, and not even the
+> same item list (Mobile has six at top level; `BOOK YOUR STAY` is nested).
+>
+> Two facts bound the question. The desktop fetch returned exactly **7** `<h1>`,
+> and after fixing only the seven Desktop labels the live homepage returns **0**.
+> If the Mobile widget's labels were `<h1>` in that same server response, the
+> original count would have been 13. So either Wix serves breakpoint-specific
+> markup, or the Mobile labels are not `<h1>`.
+>
+> **This matters because Google crawls mobile-first.** If mobile markup carries
+> its own nav `<h1>`s, the fix is only half done for the crawler that counts. The
+> deciding measurement — a mobile-UA fetch of the published site — is Task 1d of
+> [`BROWSER-AGENT-BRIEF.md`](BROWSER-AGENT-BRIEF.md) and is **not yet done**. Do
+> not describe P0.1 as complete until it is.
+
+**Status on the live site: Desktop done, 2026-07-26.** All seven Desktop labels
+are now `<p>` at 35 px, verified in the published DOM; homepage `<h1>` count went
+7 → 0, the expected midpoint before per-page headings are promoted (Task 1b).
+
 Fixed in this repo: `components/SiteHeader.tsx` uses a plain `<nav>` + `<ul>`,
 leaving exactly one `<h1>` owned by each page. Verified in the built output:
 `h1=1` on `/`, `/turtle-haven`, `/book/turtle-haven` and `/faqs`.
