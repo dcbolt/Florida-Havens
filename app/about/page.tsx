@@ -1,6 +1,8 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { BreadcrumbJsonLd } from '@/components/JsonLd'
+import { RichBody } from '@/components/RichBody'
+import { PAGE_BODY } from '@/content/page-body'
 import { SITE } from '@/content/site'
 
 export const metadata: Metadata = {
@@ -23,25 +25,8 @@ export default function AboutPage() {
         <h1 className="font-display text-4xl text-ocean-700 sm:text-5xl">
           About The Florida Havens
         </h1>
-        <div className="mt-8 space-y-5 text-base leading-relaxed text-neutral-700">
-          <p>
-            We are a family that kept coming back to the same few miles of
-            Melbourne Beach until it stopped making sense to leave. What began
-            as one house is now four homes across two beachfront campuses, all
-            of them on an active sea turtle nesting reserve.
-          </p>
-          <p>
-            We host directly because it is better on both sides. You get the
-            people who actually own and maintain the house, and we get to keep
-            the marketplace fee out of your rate.
-          </p>
-          <p>
-            The beach in front of the Havens is a protected nesting ground. That
-            shapes how we run things — no pets, shaded outdoor lighting in
-            season, and a request that you keep the dune line intact. It is a
-            small trade for having turtles come ashore outside your window.
-          </p>
-        </div>
+        {/* Copy migrated verbatim from the live Wix /about page. */}
+        <RichBody blocks={PAGE_BODY['about'] ?? []} />
         <div className="mt-10 rounded-sm border border-black/10 bg-sand-50 p-6">
           <h2 className="font-display text-xl text-ocean-700">Talk to us</h2>
           <p className="mt-2 text-sm text-neutral-700">

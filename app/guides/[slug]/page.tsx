@@ -5,6 +5,8 @@ import type { Metadata } from 'next'
 import { GUIDES, getGuide } from '@/content/guides'
 import { getProperty } from '@/content/properties'
 import { BreadcrumbJsonLd } from '@/components/JsonLd'
+import { RichBody } from '@/components/RichBody'
+import { PAGE_BODY } from '@/content/page-body'
 
 export const dynamicParams = false
 
@@ -35,6 +37,8 @@ export default async function GuidePage({
   const { slug } = await params
   const guide = getGuide(slug)
   if (!guide) notFound()
+
+  const body = PAGE_BODY[guide.legacySlug]
 
   const featured = guide.featured
     .map((s) => getProperty(s))
@@ -73,13 +77,21 @@ export default async function GuidePage({
           {guide.intro}
         </p>
 
-        <div className="mt-10 rounded-sm border border-dashed border-ocean-300 bg-ocean-50 p-5 text-sm text-ocean-700">
-          <strong className="font-semibold">Content to migrate:</strong> the
-          live Wix page{' '}
-          <code className="rounded bg-white/70 px-1">/{guide.legacySlug}</code>{' '}
-          holds the full body copy for this guide. Port it here at cutover — the
-          301 is already wired in <code>next.config.ts</code>.
-        </div>
+        {/* Body copy migrated verbatim from the live Wix page. */}
+        {body ? (
+          <div className="mt-8">
+            <RichBody blocks={body} />
+          </div>
+        ) : (
+          <div className="mt-10 rounded-sm border border-dashed border-ocean-300 bg-ocean-50 p-5 text-sm text-ocean-700">
+            <strong className="font-semibold">Content to migrate:</strong> no
+            copy captured for{' '}
+            <code className="rounded bg-white/70 px-1">
+              /{guide.legacySlug}
+            </code>
+            . Re-run <code>tools/extract-copy.py</code>.
+          </div>
+        )}
 
         {featured.length > 0 && (
           <section className="mt-14">
