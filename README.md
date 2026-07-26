@@ -21,6 +21,7 @@ In-stay guest content (TV, portal, Wi-Fi, laundry, check-in, house manuals) is
 
 | Document | What it is |
 |----------|------------|
+| [`docs/WIX-DO-FIRST.md`](docs/WIX-DO-FIRST.md) | **Start here.** The two live-site fixes worth doing first, ~15 minutes, with verification commands |
 | [`docs/AUDIT.md`](docs/AUDIT.md) | Measured audit of the live Wix site — 13 findings, severity-ranked, with evidence |
 | [`docs/WIX-P0-CHECKLIST.md`](docs/WIX-P0-CHECKLIST.md) | Click-by-click fixes for the **live Wix site**, independent of this rebuild |
 | [`docs/URL-MATRIX.md`](docs/URL-MATRIX.md) | All 77 live URLs classified keep / redirect / retire |

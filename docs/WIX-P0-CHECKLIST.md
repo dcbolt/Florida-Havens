@@ -24,6 +24,20 @@ over to the new site.
 
 Ordered by return on effort. **P0.1 is worth more than the rest combined.**
 
+> **Just want the short version?** [`WIX-DO-FIRST.md`](WIX-DO-FIRST.md) has only
+> P0.1 and P0.9 — the two items no API can reach — as a ~15 minute action card.
+> This file is the complete reference.
+
+### Everything reachable by API is now done
+
+Confirmed against the live site, so no one re-checks it:
+`shouldUsePartialRouteMatch: false` (proper 404s, correct) ·
+`shouldFlattenUrlHierarchy: false` (flat URLs, correct) · canonicals present and
+self-referencing on all 77 pages · titles unique sitewide · `robots.txt`
+appropriate as-is · business phone corrected and verified live.
+
+There is no remaining API-reachable change. What follows requires the editor.
+
 ---
 
 ## What the Wix REST API can and cannot reach
