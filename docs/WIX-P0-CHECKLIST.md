@@ -91,10 +91,46 @@ is "HOME ABOUT PROPERTIES…". See `AUDIT.md` §1.
 Then give each page one real `<h1>`: on every page, select the main headline
 (e.g. "WELCOME TO TURTLE HAVEN") and set it to **Heading 1**.
 
-> Wix caveat: if the menu is a **Wix Menu component** rather than a text
-> element, the tag is controlled by the component and may not be editable. If
-> so, replace the header menu with a **horizontal text-link strip**, or accept
-> it and prioritise the rebuild — this bug alone justifies the migration.
+### RESOLVED 2026-07-26: the Menu-component risk does not apply
+
+This was the open question that decided whether P0.1 was even attemptable.
+**Answered from the live HTML — no editor needed. They are Text elements, so
+P0.1 is editable.**
+
+Each nav label renders as:
+
+```html
+<h1 class="font_0 wixui-rich-text__text" style="font-size:35px;">
+  <a href="https://www.thefloridahavens.com/about" target="_self" …>
+    <span …>ABOUT</span>
+```
+
+`wixui-rich-text__text` is the Wix **Text** component, and `font_0` is the
+theme's Heading 1 style. So each item is an individual Text element whose style
+you can change — not a menu component with a locked tag.
+
+The page does also contain `StylableHorizontalMenu` markup (64 references),
+almost certainly the **mobile** menu or a secondary strip. That one may well be
+a real component with a locked tag — but it is *not* where the seven `<h1>`s
+come from. Check the desktop header first; it is the whole problem and it is
+editable.
+
+### Exact styling to restore (measured, not guessed)
+
+After switching the style away from Heading 1, the text will resize. Restore
+these values via **Design → Customize** and the nav will be pixel-identical:
+
+| Property | Value |
+|---|---|
+| Theme style (current) | `font_0` — Heading 1 |
+| Font family | `cormorantgaramond-semibold`, fallback `cormorant garamond, serif` |
+| Font size | **35 px** |
+| Letter spacing | **0.05em** |
+| Weight | **bold** |
+| Colour | theme `color_38` |
+
+Verify afterwards with the `grep -o '<h1' | wc -l` check above, and confirm the
+computed font-size is still 35 px in devtools.
 
 ---
 
