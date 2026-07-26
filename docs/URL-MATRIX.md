@@ -112,7 +112,7 @@ request method.
 | `/beach-street-parking` | `301` | `https://welcome.mediahaven.app` | 945 | 145 |
 | `/beach-street-pool-spa` | `301` | `https://welcome.mediahaven.app` | 965 | 292 |
 | `/beach-street-sea-turtle-guide` | `301` | `https://welcome.mediahaven.app` | 954 | 353 |
-| `/beach-street-shuttle-launches` | `301` | `https://welcome.mediahaven.app` | 949 | 167 |
+| `/beach-street-shuttle-launches` | `301` | `/guides/space-coast-rocket-launches` | 949 | 167 |
 | `/beach-street-tv-entertainment-guide` | `301` | `https://welcome.mediahaven.app` | 951 | 197 |
 | `/beach-street-waste-management` | `301` | `https://welcome.mediahaven.app` | 946 | 254 |
 | `/connect-dunes` | `301` | `https://welcome.mediahaven.app` | 980 | 113 |

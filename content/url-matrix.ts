@@ -45,7 +45,7 @@ export const URL_MATRIX: UrlRow[] = [
   { from: '/beach-street-parking', to: 'https://welcome.mediahaven.app', action: '301', note: 'guest-ops → Media Haven (never on marketing domain)', liveKb: 945, words: 145 },
   { from: '/beach-street-pool-spa', to: 'https://welcome.mediahaven.app', action: '301', note: 'guest-ops → Media Haven (never on marketing domain)', liveKb: 965, words: 292 },
   { from: '/beach-street-sea-turtle-guide', to: 'https://welcome.mediahaven.app', action: '301', note: 'guest-ops → Media Haven (never on marketing domain)', liveKb: 954, words: 353 },
-  { from: '/beach-street-shuttle-launches', to: 'https://welcome.mediahaven.app', action: '301', note: 'guest-ops → Media Haven (never on marketing domain)', liveKb: 949, words: 167 },
+  { from: '/beach-street-shuttle-launches', to: '/guides/space-coast-rocket-launches', action: '301', note: 'DEMAND content (rocket schedule) — fold into SEO guide, not guest portal', liveKb: 949, words: 167 },
   { from: '/beach-street-tv-entertainment-guide', to: 'https://welcome.mediahaven.app', action: '301', note: 'guest-ops → Media Haven (never on marketing domain)', liveKb: 951, words: 197 },
   { from: '/beach-street-waste-management', to: 'https://welcome.mediahaven.app', action: '301', note: 'guest-ops → Media Haven (never on marketing domain)', liveKb: 946, words: 254 },
   { from: '/beach-strret-wifi-guide', to: 'https://welcome.mediahaven.app/beach-street/wifi', action: '301', note: 'TYPO SLUG — redirect then retire', liveKb: 947, words: 133 },
