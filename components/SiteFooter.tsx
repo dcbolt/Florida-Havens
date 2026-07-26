@@ -1,6 +1,6 @@
 import Link from 'next/link'
-import { SITE } from '@/content/site'
 import { HOMES, CAMPUSES } from '@/content/properties'
+import { GUEST_PORTAL, SITE } from '@/content/site'
 
 /**
  * Resolved once at module evaluation (build time) rather than per render.
@@ -146,7 +146,7 @@ export function SiteFooter() {
         © {BUILD_YEAR} {SITE.legalName}. Staying with us? Your
         house guide lives in the{' '}
         <a
-          href="https://welcome.mediahaven.app"
+          href={GUEST_PORTAL.url}
           className="text-ocean-700 hover:underline"
         >
           guest portal

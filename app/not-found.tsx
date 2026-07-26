@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { GUEST_PORTAL } from '@/content/site'
 
 export default function NotFound() {
   return (
@@ -10,7 +11,7 @@ export default function NotFound() {
         It may have moved. If you were looking for a house guide, Wi-Fi details
         or check-in steps, those now live in the{' '}
         <a
-          href="https://welcome.mediahaven.app"
+          href={GUEST_PORTAL.url}
           className="text-ocean-700 underline"
         >
           guest portal

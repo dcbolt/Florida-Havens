@@ -66,4 +66,40 @@ jobs:
             fail=1
           fi
 
+          # Rocket-launch demand content must not be redirected to the guest
+          # portal. Regression guard for the /beach-street-shuttle-launches bug.
+          shuttle=$(curl -sS -o /dev/null -w '%{redirect_url}' http://127.0.0.1:3111/beach-street-shuttle-launches)
+          case "$shuttle" in
+            */guides/space-coast-rocket-launches) ;;
+            *) echo "::error::/beach-street-shuttle-launches redirects to '$shuttle', expected the rocket guide"; fail=1 ;;
+          esac
+
+          exit $fail
+
+      # Every redirect target must actually resolve. A permanent redirect to a
+      # host with no DNS is worse than no redirect at all -- this caught 42 rows
+      # pointing at welcome.mediahaven.app, which does not exist.
+      - name: Assert every redirect target resolves
+        run: |
+          fail=0
+          targets=$(node -e "
+            const m = require('./.next/required-server-files.json');
+            const rs = (m.config.redirects || []);
+            console.log(rs.map(r => r.destination).filter(d => /^https?:\/\//.test(d)).join('\n'));
+          " 2>/dev/null || true)
+
+          if [ -z "$targets" ]; then
+            echo 'No external redirect targets — all redirects are relative. OK.'
+            exit 0
+          fi
+
+          for t in $(printf '%s\n' "$targets" | sort -u); do
+            code=$(curl -sS -o /dev/null -L --max-time 20 -w '%{http_code}' "$t" || echo 000)
+            if [ "$code" = "000" ] || [ "$code" -ge 400 ]; then
+              echo "::error::redirect target $t is unreachable (HTTP $code)"
+              fail=1
+            else
+              echo "ok $t ($code)"
+            fi
+          done
           exit $fail

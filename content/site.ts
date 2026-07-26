@@ -27,6 +27,30 @@ export const SITE = {
   social: [] as string[],
 } as const
 
+/**
+ * Media Haven guest portal — the destination for all in-stay content.
+ *
+ * REDLINE (Grok, 2026-07-26): `welcome.mediahaven.app` was assumed here and it
+ * does not exist — no DNS record for it or for `mediahaven.app`. Verified
+ * independently. The only reachable guest surface today is the Vercel preview
+ * below (HTTP 200).
+ *
+ * A permanent redirect to a nonexistent host is worse than no redirect, so
+ * while `hostConfirmed` is false the guest-ops URLs resolve to an on-domain
+ * `/guest-portal` notice page instead. That page is noindex, so the index
+ * bloat is still cleared, and nothing 301s into a void.
+ *
+ * DEVIN: confirm the production guest-portal host, set `url`, and flip
+ * `hostConfirmed` to true. That single change converts all 42 guest-ops rows
+ * to external 301s — no other edit needed.
+ */
+export const GUEST_PORTAL = {
+  hostConfirmed: false,
+  /** Reachable today, but a preview deployment — not a 301 target. */
+  url: 'https://media-haven-lilac.vercel.app/welcome',
+  fallbackPath: '/guest-portal',
+} as const
+
 export const NAV = [
   { href: '/', label: 'Home' },
   { href: '/about', label: 'About' },

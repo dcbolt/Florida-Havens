@@ -39,7 +39,7 @@ export const GUIDES: Guide[] = [
       'Beachfront homes with a clear northern view toward Kennedy Space Center. Watch SpaceX and NASA launches from the sand.',
     h1: 'Watch Space Coast Rocket Launches from the Beach',
     intro:
-      'Our stretch of Melbourne Beach looks north up the coast toward Kennedy Space Center. On launch nights you can walk down to the sand and watch it climb.',
+      'Our stretch of Melbourne Beach looks north up the coast toward Kennedy Space Center. On launch nights you can walk down to the sand and watch it climb. This guide also absorbs the old Beach Street shuttle-launch page, including launch-day transportation notes for guests staying at the Beach Street campus.',
     featured: ['turtle-haven', 'shell-haven'],
   },
   {

@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import { BreadcrumbJsonLd } from '@/components/JsonLd'
-import { SITE } from '@/content/site'
+import { GUEST_PORTAL, SITE } from '@/content/site'
 
 export const metadata: Metadata = {
   title: 'Contact',
@@ -67,7 +67,7 @@ export default function ContactPage() {
           Already staying with us? Your house guide, Wi-Fi details and check-out
           steps live in the{' '}
           <a
-            href="https://welcome.mediahaven.app"
+            href={GUEST_PORTAL.url}
             className="text-ocean-700 hover:underline"
           >
             guest portal
