@@ -53,7 +53,14 @@ def urls():
     for sm in SITEMAPS:
         xml, _ = get(f"{BASE}/{sm}")
         out |= set(re.findall(r"<loc>\s*(https://www\.thefloridahavens\.com[^<\s]*)", xml))
-    out.add(f"{BASE}/")
+    # The sitemap lists the homepage WITHOUT a trailing slash, so adding BASE+"/"
+    # naively yields two entries for the same page. The 2026-07-26 snapshot shipped
+    # with that duplicate and inflated every sitewide total by one homepage —
+    # 79.6 MB instead of 77.9 MB, and 422/735 empty alts instead of 357/667.
+    # Normalise before returning.
+    out = {u.rstrip("/") for u in out}
+    out.discard(BASE)
+    out.add(BASE + "/")
     return sorted(out)
 
 

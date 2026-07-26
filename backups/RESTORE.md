@@ -13,7 +13,10 @@ none.
 | `wix-site-properties-*.json` | Business info fields (phone, email, address, locale, currency) — **directly, via API** | Anything in the editor |
 | `content-snapshot-*.json.gz` | Reference copy of every page's **text, headings, alt text and SEO metadata** | Layout, design, element structure, galleries, embeds |
 
-**Snapshot `2026-07-26`: 78 / 78 URLs captured clean, 28,646 words, zero gaps.**
+**Snapshot `2026-07-26`: 77 / 77 URLs captured clean, zero gaps.**
+The original run fetched the homepage twice (bare URL and trailing slash); the
+duplicate has been removed and the tool now normalises. Every sitewide total
+from the first version was inflated by one homepage.
 Five URLs were lost to Wix 429s on the first pass and filled on a second — see
 `tools/fill-snapshot-gaps.py`. Always confirm `clean_count == url_count` before
 treating a snapshot as complete.

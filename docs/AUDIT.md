@@ -1,7 +1,7 @@
 # thefloridahavens.com — technical audit
 
 **Method:** complete census of every URL in the live Wix sitemap, 2026-07-26 —
-**78 of 78 captured clean**. All figures below are measured from live server
+**77 of 77 captured clean**. All figures below are measured from live server
 HTML, not estimated.
 
 An earlier pass reached only 74 of 77 (Wix rate-limiting) and the figures here
@@ -28,16 +28,16 @@ truncated read must be filled rather than believed (see the corrections section)
 
 | # | Finding | Severity | Evidence |
 |---|---------|----------|----------|
-| 1 | Nav labels are `<h1>` sitewide | **Critical** | **0 of 78** pages have exactly one `<h1>` |
+| 1 | Nav labels are `<h1>` sitewide | **Critical** | **0 of 77** pages have exactly one `<h1>` |
 | 2 | No structured data | **Critical** | 72 of 74 sampled pages carry zero JSON-LD |
 | 3 | Host's personal cell published as the business phone | **Critical** | schema `5087260695` (Craig's cell) vs public `321-209-0495` |
-| 4 | ~1 MB of HTML per page | **High** | mean **1,045 KB**; **79.6 MB** sitewide; lightest page still 942 KB |
+| 4 | ~1 MB of HTML per page | **High** | mean **1,037 KB**; **77.9 MB** sitewide; lightest page still 942 KB |
 | 5 | Booking widget is client-injected | **High** | 0 `<iframe>` in server HTML on all 7 book pages |
 | 6 | Guest-ops pages fully indexable | **High** | 0 pages emit a robots meta tag |
-| 7 | 57% of images have empty `alt` | **High** | **422 of 735** `<img>`; 65 of 68 on the homepage |
-| 8 | Meta descriptions overflow | **Medium** | **53 of 78** exceed 160 chars; longest 294 |
+| 7 | 54% of images have empty `alt` | **High** | **357 of 667** `<img>`; 65 of 68 on the homepage |
+| 8 | Meta descriptions overflow | **Medium** | **53 of 77** exceed 160 chars; longest 294 |
 | 9 | 245 images lack dimensions | **Medium** | layout-shift risk |
-| 10 | Broken heading hierarchy | **Medium** | **42 of 78** pages use `<h5>` with no `<h3>` |
+| 10 | Broken heading hierarchy | **Medium** | **41 of 77** pages use `<h5>` with no `<h3>` |
 | 11 | Typo in a live URL | **Medium** | `/beach-strret-wifi-guide` |
 | 12 | No `preconnect` anywhere | **Low** | 0 across all 74 pages |
 | 13 | Titles over 60 chars | **Low** | 7 pages; longest 93 |
@@ -53,11 +53,11 @@ HOME · ABOUT · PROPERTIES · BOOK YOUR STAY · LOCAL ATTRACTIONS ·
 GUEST RESOURCES · CONTACT
 ```
 
-Measured `<h1>` count across all **78** pages:
+Measured `<h1>` count across all **77** pages:
 
 | `<h1>` per page | Pages |
 |---:|---:|
-| 7 | 21 |
+| 7 | 20 |
 | 8 | 46 |
 | 9 | 9 |
 | 10 | 1 |
@@ -126,11 +126,11 @@ cannot drift again.
 
 | Metric | Uncompressed | Gzipped |
 |--------|-------------:|--------:|
-| Mean per page | **1,045 KB** | ~209 KB |
+| Mean per page | **1,037 KB** | ~209 KB |
 | Median | 970 KB | ~201 KB |
 | Heaviest (`/`) | 1,688 KB | 275 KB |
 | **Lightest** | **942 KB** | — |
-| **Total, 78 pages** | **79.6 MB** | — |
+| **Total, 77 pages** | **77.9 MB** | — |
 
 The lightest figure is the one worth pausing on: **no page on this site is under
 942 KB.** There is no light page to point at — the floor is the problem, not the
@@ -210,9 +210,9 @@ to the guest portal in `next.config.ts`.
 
 | Measure | Count |
 |---------|------:|
-| Total `<img>` | **735** |
+| Total `<img>` | **667** |
 | Missing `alt` attribute | 0 |
-| **Empty `alt=""`** | **422 (57%)** |
+| **Empty `alt=""`** | **357 (54%)** |
 | Missing width/height | 245 (of the 74-page sample) |
 | `loading="lazy"` | 409 (of the 74-page sample) |
 
@@ -223,11 +223,11 @@ hero photography and logos, which is what these are. On the homepage, **65 of
 
 ## 8–13. Remaining findings
 
-- **Meta descriptions:** **53 of 78** exceed 160 characters. The homepage runs
+- **Meta descriptions:** **53 of 77** exceed 160 characters. The homepage runs
   ~500 characters of stacked "Stay near…" phrases; Google renders roughly the
   first 155. One duplicate pair (the two Wi-Fi guides).
 - **Dimensionless images:** 245 `<img>` without width/height → layout shift.
-- **Heading hierarchy:** **42 of 78** pages jump from `<h2>` to `<h5>` with no `<h3>`.
+- **Heading hierarchy:** **41 of 77** pages jump from `<h2>` to `<h5>` with no `<h3>`.
 - **Typo URL:** `/beach-strret-wifi-guide` is live and indexable.
 - **No preconnect:** zero `rel=preconnect` across the whole site; only 1.1
   preloads per page on average.
@@ -274,7 +274,21 @@ Two figures from the 2026-07-26 pass should be restated:
    `tools/fill-snapshot-gaps.py` refetches those until the census is complete.
    Any figure in this document derives only from the 78 clean captures.
 
-3. **Finding 3 was mischaracterised** as "the wrong number". Both numbers reach
+3. **The census said 78 pages; there are 77.** `tools/backup-live-site.py` did
+   not normalise trailing slashes, and the live sitemap lists the homepage
+   *without* one — so adding `BASE + "/"` produced two entries for the same page.
+   Every sitewide total in the first version of this document was inflated by one
+   homepage: **79.6 MB → 77.9 MB**, **422/735 empty alts → 357/667**, h5-without-h3
+   42 → 41.
+
+   Two things worth noting. First, I had already fixed this exact normalisation
+   bug in `tools/phone-audit.py` and never back-ported it — the fix existed, in the
+   wrong file. Second, the empty-alt *percentage* was **54% all along**; my earlier
+   "correction" from 54% to 57% moved it away from the truth by counting the
+   homepage's 68 images twice. Grok's independent count of 76 pages-sitemap URLs
+   (+1 blog post = 77) was right, and my insistence on 78 was the error.
+
+4. **Finding 3 was mischaracterised** as "the wrong number". Both numbers reach
    the host: `5087260695` is his personal cell, `321-209-0495` the business
    forwarder. Nothing was broken for guests — the defect was publishing a
    personal mobile as canonical machine-readable business contact. Corrected in

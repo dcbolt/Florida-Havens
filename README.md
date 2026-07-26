@@ -36,12 +36,12 @@ Measured on the live Wix site, 2026-07-26 (74 of 77 sitemap URLs crawled):
 
 | Finding | Measured |
 |---------|----------|
-| Pages with exactly one `<h1>` | **0 of 74** — nav labels are `<h1>` sitewide |
+| Pages with exactly one `<h1>` | **0 of 77** — nav labels are `<h1>` sitewide |
 | Pages with zero structured data | **72 of 74** |
-| Mean HTML per page | **1,030 KB** uncompressed (74.4 MB sitewide) |
+| Mean HTML per page | **1,037 KB** uncompressed (77.9 MB sitewide) |
 | Inline script per page | **332 KB** average |
 | `<iframe>` in server HTML | **0** — the booking widget is client-injected |
-| Images with empty `alt` | **351 of 646 (54%)** |
+| Images with empty `alt` | **357 of 667 (54%)** |
 | Phone numbers published | **2** — the host's personal cell in schema vs the business number in visible copy (**fixed live**) |
 
 Result of the rebuild, measured on built output:
