@@ -2,6 +2,7 @@ import type { MetadataRoute } from 'next'
 import { SITE } from '@/content/site'
 import { PROPERTIES, BOOKABLE } from '@/content/properties'
 import { GUIDES } from '@/content/guides'
+import { POSTS } from '@/content/blog'
 
 /**
  * Sitemap generated from the content model rather than hand-maintained.
@@ -21,6 +22,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { path: '/contact', priority: 0.6 },
     { path: '/faqs', priority: 0.7 },
     { path: '/guides', priority: 0.7 },
+    { path: '/guest-blog', priority: 0.5 },
     { path: '/privacy-policy', priority: 0.2 },
     { path: '/terms-and-conditions', priority: 0.2 },
     { path: '/refund-policy', priority: 0.2 },
@@ -42,6 +44,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
       url: `${base}/guides/${g.slug}`,
       changeFrequency: 'monthly' as const,
       priority: 0.7,
+    })),
+    ...POSTS.map((post) => ({
+      url: `${base}/post/${post.slug}`,
+      changeFrequency: 'yearly' as const,
+      priority: 0.4,
     })),
     ...BOOKABLE.map((slug) => ({
       url: `${base}/book/${slug}`,

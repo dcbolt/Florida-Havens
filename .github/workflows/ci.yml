@@ -76,6 +76,30 @@ jobs:
 
           exit $fail
 
+      # Every URL the matrix marks KEEP must actually serve a page. The matrix
+      # said /guest-blog, /post/* and /guest-story-entry-form were 1:1 keeps
+      # while the app had no route for any of them -- all three would have 404'd
+      # at cutover and dropped an indexed page. A declared intention is not a
+      # route; assert it.
+      - name: Assert every KEEP URL in the matrix resolves
+        run: |
+          npx next start -p 3112 &
+          for i in $(seq 1 40); do curl -sf -o /dev/null http://127.0.0.1:3112/ && break; sleep 1; done
+
+          keeps=$(grep -oE "\{ from: '[^']*', to: [^,]*, action: 'KEEP(\+NOINDEX)?'" content/url-matrix.ts \
+                  | sed -E "s/\{ from: '([^']*)'.*/\1/")
+          fail=0
+          for u in $keeps; do
+            code=$(curl -sS -o /dev/null -w '%{http_code}' "http://127.0.0.1:3112$u")
+            if [ "$code" != "200" ]; then
+              echo "::error::matrix marks $u as KEEP but it returned HTTP $code"
+              fail=1
+            else
+              echo "ok $u"
+            fi
+          done
+          exit $fail
+
       # Every redirect target must actually resolve. A permanent redirect to a
       # host with no DNS is worse than no redirect at all -- this caught 42 rows
       # pointing at welcome.mediahaven.app, which does not exist.

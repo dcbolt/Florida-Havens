@@ -135,6 +135,32 @@ export function FaqJsonLd({ faqs }: { faqs: Faq[] }) {
   )
 }
 
+/**
+ * BlogPosting. The live site has this on its single post (the only page besides
+ * the homepage with any structured data at all), so it must survive the rebuild.
+ */
+export function BlogPostingJsonLd({
+  post,
+}: {
+  post: { slug: string; title: string; description: string; published: string }
+}) {
+  return (
+    <Script
+      data={{
+        '@context': 'https://schema.org',
+        '@type': 'BlogPosting',
+        '@id': `${SITE.url}/post/${post.slug}#post`,
+        headline: post.title,
+        description: post.description,
+        datePublished: post.published,
+        mainEntityOfPage: `${SITE.url}/post/${post.slug}`,
+        author: { '@id': `${SITE.url}/#organization` },
+        publisher: { '@id': `${SITE.url}/#organization` },
+      }}
+    />
+  )
+}
+
 export function BreadcrumbJsonLd({
   trail,
 }: {
