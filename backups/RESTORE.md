@@ -12,6 +12,11 @@ none.
 |---|---|---|
 | `wix-site-properties-*.json` | Business info fields (phone, email, address, locale, currency) — **directly, via API** | Anything in the editor |
 | `content-snapshot-*.json.gz` | Reference copy of every page's **text, headings, alt text and SEO metadata** | Layout, design, element structure, galleries, embeds |
+
+**Snapshot `2026-07-26`: 78 / 78 URLs captured clean, 28,646 words, zero gaps.**
+Five URLs were lost to Wix 429s on the first pass and filled on a second — see
+`tools/fill-snapshot-gaps.py`. Always confirm `clean_count == url_count` before
+treating a snapshot as complete.
 | **Wix Site History** (dashboard) | **Everything** — the real rollback | — |
 
 **Rendered HTML cannot be pushed back into the Wix editor.** A Wix page is
@@ -100,6 +105,15 @@ this site is ~950 KB+. This matters: an earlier crawl recorded
 `/stay-near-brevard-zoo-melbourne-beach-house` as "0 words", which looked like a
 broken page but was a truncated read. Re-run to fill anything the script lists
 as not cleanly captured; never treat a flagged row as fact.
+
+To fill gaps without re-crawling all 78:
+
+```bash
+python3 tools/fill-snapshot-gaps.py backups/content-snapshot-<stamp>.json.gz
+```
+
+It re-fetches only the flagged URLs with longer backoff and merges them in,
+then reports remaining gaps. Aim for **0**.
 
 ## Inspecting a snapshot
 
