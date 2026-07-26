@@ -1,0 +1,72 @@
+{
+  "_comment": [
+    "Wix site-properties state for The Florida Havens, captured 2026-07-26.",
+    "Site ID: 6622db1b-c256-485d-9468-5b9d3ac43561",
+    "Read via GET https://www.wixapis.com/site-properties/v4/properties",
+    "",
+    "'before' is the state prior to the P0.2 phone fix. 'after' is verified live.",
+    "Only properties.phone was changed. Email, address, locale, currency,",
+    "timezone, logo, description and categories were not touched — the update",
+    "used fields.paths=['phone'] so nothing else could be overwritten.",
+    "",
+    "To revert, see RESTORE.md in this directory."
+  ],
+  "siteId": "6622db1b-c256-485d-9468-5b9d3ac43561",
+  "capturedAt": "2026-07-26",
+  "changedBy": "P0.2 — one phone everywhere (321-209-0495)",
+
+  "before": {
+    "propertiesVersion": "24 (inferred; 25 observed immediately after the write)",
+    "phone": "5087260695",
+    "note": "508 is a Massachusetts area code. This value fed the auto-generated homepage LocalBusiness JSON-LD telephone field, which is why the schema and the visible site disagreed."
+  },
+
+  "after": {
+    "version": "25",
+    "properties": {
+      "categories": { "primary": "other", "secondary": ["Vacation Rental"] },
+      "locale": { "languageCode": "en", "country": "US" },
+      "language": "en",
+      "paymentCurrency": "USD",
+      "timeZone": "America/New_York",
+      "email": "relax@thefloridahavens.com",
+      "phone": "321-209-0495",
+      "address": {
+        "street": "South Highway A1A",
+        "city": "Melbourne Beach",
+        "country": "US",
+        "state": "FL",
+        "zip": "32951-3608",
+        "isPhysical": true,
+        "googleFormattedAddress": "4225 S Hwy A1A, Melbourne Beach, FL, USA",
+        "streetNumber": "4225",
+        "apartmentNumber": "",
+        "coordinates": { "latitude": 28.004933, "longitude": -80.52771129999999 }
+      },
+      "siteDisplayName": "The Florida Havens",
+      "businessName": "The Florida Havens",
+      "logo": "f054db_d3a8cbc184ae4965863db223624c765e~mv2.png",
+      "description": "Discover luxury beachfront villas in Melbourne Beach, FL. Enjoy private pools, spas, and beach access for family getaways and retreats. Book Today!",
+      "businessConfig": "UNKNOWN",
+      "trackClicksAnalytics": true
+    }
+  },
+
+  "installedApps": [
+    { "name": "Promote SEO", "id": "1480c568-5cbd-9392-5604-1148f5faffa0" },
+    { "name": "Wix Blog", "id": "14bcded7-0066-7c35-14d7-466cb3f09103" },
+    { "name": "Wix Forms", "id": "225dd912-7dea-4738-8688-4b8c6955ffc2" },
+    { "name": "Wix Forms & Payments", "id": "14ce1214-b278-a7e4-1373-00cebd1bef7c" },
+    { "name": "Wix Invoices", "id": "13ee94c1-b635-8505-3391-97919052c16f" }
+  ],
+
+  "siteMeta": {
+    "url": "https://www.thefloridahavens.com/",
+    "status": "Published",
+    "plan": "Premium, custom domain",
+    "editorType": "Editor",
+    "veloEnabled": true,
+    "created": "2025-11-03T21:28:00Z",
+    "lastUpdatedBeforeThisWork": "2026-07-24T15:14:00Z"
+  }
+}

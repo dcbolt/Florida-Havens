@@ -20,7 +20,7 @@ Reproduce with `python3 tools/crawl.py` (needs `data/urls.txt`).
 |---|---------|----------|----------|
 | 1 | Nav labels are `<h1>` sitewide | **Critical** | 0 of 74 pages have exactly one `<h1>` |
 | 2 | No structured data | **Critical** | 72 of 74 pages carry zero JSON-LD |
-| 3 | Two different phone numbers | **Critical** | schema `5087260695` vs public `321-209-0495` |
+| 3 | Host's personal cell published as the business phone | **Critical** | schema `5087260695` (Craig's cell) vs public `321-209-0495` |
 | 4 | ~1 MB of HTML per page | **High** | mean 1,030 KB uncompressed; 74.4 MB sitewide |
 | 5 | Booking widget is client-injected | **High** | 0 `<iframe>` in server HTML on all 7 book pages |
 | 6 | Guest-ops pages fully indexable | **High** | 0 pages emit a robots meta tag |
@@ -80,19 +80,36 @@ Fixed in this repo: `components/JsonLd.tsx` emits `LodgingBusiness` (brand),
 `WebSite`, `VacationRental` per home with occupancy and amenities,
 `BreadcrumbList` on every nested route, and `FAQPage` on `/faqs`.
 
-## 3. Two phone numbers — critical
+## 3. Host's personal cell published as the business phone — critical
 
-| Surface | Value |
-|---------|-------|
-| Homepage JSON-LD `telephone` | `5087260695` |
-| Visible footer / booking copy | `321-209-0495` |
+| Surface | Value | What it actually is |
+|---------|-------|---------------------|
+| Homepage JSON-LD `telephone` | `5087260695` | **Craig's personal cell** — the direct host line |
+| Visible footer / booking copy | `321-209-0495` | The Havens' business number, forwarded to Craig's cell |
 
-`5087260695` is a Massachusetts area code on a Florida lodging business. Beyond
-the NAP-consistency signal, a guest who copies the schema number reaches the
-wrong line.
+Devin confirmed the distinction. That makes this more than a NAP-consistency
+problem: the site was publishing a host's personal mobile number as the
+business's canonical `telephone` in machine-readable structured data, where
+scrapers and aggregators pick it up and it is effectively impossible to recall.
+Both numbers reach Craig, so nothing was broken for guests — the exposure was
+the issue.
 
-Confirmed correct number: **321-209-0495**. Fixed in this repo — every surface
-reads `SITE.phone` from `content/site.ts`, so the two cannot drift again.
+The business number is the correct public value because it is a forwarding
+number: it can be re-pointed without reprinting the web.
+
+**FIXED on the live site, 2026-07-26** (P0.2). Wix auto-generates the homepage
+`LocalBusiness` JSON-LD from Settings → Business Info, so the root cause was the
+Site Properties `phone` field. Updated via the Site Properties API with the
+field mask restricted to `phone`; verified live:
+
+```
+telephone -> 321-209-0495     (homepage JSON-LD)
+5087260695                    -> no occurrences on /, /contact,
+                                 /book-the-florida-havens, /faqs
+```
+
+In this repo every surface reads `SITE.phone` from `content/site.ts`, so the two
+cannot drift again.
 
 ## 4. Page weight — high
 

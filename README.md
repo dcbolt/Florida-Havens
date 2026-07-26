@@ -42,7 +42,7 @@ Measured on the live Wix site, 2026-07-26 (74 of 77 sitemap URLs crawled):
 | Inline script per page | **332 KB** average |
 | `<iframe>` in server HTML | **0** — the booking widget is client-injected |
 | Images with empty `alt` | **351 of 646 (54%)** |
-| Phone numbers published | **2** (schema `5087260695` vs public `321-209-0495`) |
+| Phone numbers published | **2** — the host's personal cell in schema vs the business number in visible copy (**fixed live**) |
 
 Result of the rebuild, measured on built output:
 
@@ -103,7 +103,7 @@ data/
 |--------------|-----|-------|
 | 7–10 `<h1>` per page | nav is `<nav>`/`<ul>`; one `<h1>` per page | `components/SiteHeader.tsx` |
 | No structured data | LodgingBusiness, VacationRental, FAQPage, BreadcrumbList | `components/JsonLd.tsx` |
-| Two phone numbers | one constant, read everywhere | `content/site.ts` |
+| Host's cell as the public phone | one constant, read everywhere | `content/site.ts` |
 | ~1 MB HTML | static prerender, no hydration dump | framework default |
 | Client-injected booking iframe | trust content first, widget on click | `components/BookingMount.tsx` |
 | PNG/JPG heroes | AVIF/WebP + explicit dimensions | `next/image` + `next.config.ts` |

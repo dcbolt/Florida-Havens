@@ -1,10 +1,18 @@
 /**
  * Single source of truth for brand-level facts.
  *
- * AUDIT FIX: the live Wix site publishes two different phone numbers — the
- * homepage JSON-LD carries 5087260695 while the visible footer/booking copy
- * uses 321-209-0495. Devin confirmed 321-209-0495 is the only correct number.
- * Every surface reads it from here so the two can never drift again.
+ * AUDIT FIX: the live Wix site published two different numbers — the homepage
+ * JSON-LD carried 5087260695, which is Craig's personal cell (the direct host
+ * line), while the visible copy used 321-209-0495, the Havens' business number
+ * that forwards to that cell.
+ *
+ * 321-209-0495 is the correct public value on both counts: it keeps a personal
+ * mobile out of machine-readable structured data, and because it is a
+ * forwarding number it can be re-pointed later without reprinting the web.
+ *
+ * Craig's cell is a host contact, not a published business number — do not add
+ * it to this file or to any public surface. Every surface reads SITE.phone from
+ * here so the two can never drift again.
  */
 export const SITE = {
   name: 'The Florida Havens',

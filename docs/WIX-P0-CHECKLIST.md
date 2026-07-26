@@ -4,11 +4,65 @@ Everything here applies to the **live Wix site** and is independent of the
 rebuild in this repo. Do these now; they pay off immediately and they carry
 over to the new site.
 
-No Wix collaborator access was granted for this pass, so these are written as
-instructions rather than reported as done. Grant Editor + SEO + Apps access and
-they can be executed directly.
+**Status as of 2026-07-26:** Wix access is now live (Partner account, site
+`6622db1b-c256-485d-9468-5b9d3ac43561`).
+
+**P0.2 is DONE and verified live.** The rest cannot be automated — see
+"What the Wix REST API can and cannot reach" below. They are real editor work.
+
+| Item | Status |
+|---|---|
+| P0.1 nav H1 | **Manual** — no API for page element markup |
+| P0.2 phone | **✅ DONE 2026-07-26**, verified live |
+| P0.3 noindex guest-ops | **Manual** — no per-page SEO API |
+| P0.4 301 typo slug | **Manual** — no URL-redirect API |
+| P0.5 alt text | **Manual** — editor content |
+| P0.6 gallery dupes | **Manual** — editor content |
+| P0.7 book page order | **Manual** — editor content |
+| P0.8 PSI baseline | **Devin/Grok** — blocked in this sandbox |
 
 Ordered by return on effort. **P0.1 is worth more than the rest combined.**
+
+---
+
+## What the Wix REST API can and cannot reach
+
+Checked against the live API spec, not assumed. This determines what can be
+automated on future passes, so it is worth recording precisely.
+
+**Reachable:**
+- Site Properties (business info: phone, email, address, locale, currency) —
+  this is what made P0.2 automatable
+- `robots.txt`, `ads.txt`, `llms.txt` contents
+- SEO User Config — site-level only: URL-hierarchy flattening, and whether
+  non-existent pages return a real 404 or a soft 200
+- CMS collections, Blog posts, Forms, Media Manager
+
+**Not reachable — no endpoint exists:**
+- **Per-page SEO settings**, including the `noindex` toggle (blocks P0.3)
+- **URL Redirect Manager / 301s** (blocks P0.4). The only "Redirects" resource
+  in the spec is Wix Headless *redirect sessions* — checkout/auth handoffs, an
+  unrelated feature.
+- **Page element markup**, so no way to change a heading tag (blocks P0.1) or
+  set image `alt` on page elements (blocks P0.5)
+- **Gallery contents** on a page (blocks P0.6), page layout (blocks P0.7)
+- **Site revisions / backup / restore.** The only `Backups` resource is
+  CMS-collection scoped. Site History is dashboard-only.
+
+### A note on P0.3 and robots.txt
+
+The Robots.txt API *is* writable, so `Disallow:` rules for the ~40 guest-ops
+paths could be pushed automatically. **That was deliberately not done, because
+it would make the problem worse.**
+
+These URLs are already indexed. `Disallow` blocks crawling, and Google cannot
+act on a `noindex` it is not allowed to fetch — so already-indexed URLs can sit
+in the index indefinitely, often as a bare title with "no information
+available". To *remove* a URL you want the opposite: keep it crawlable and serve
+`noindex` until Google drops it.
+
+So P0.3 stays a manual dashboard job. Blanket-disallowing would look like
+progress while entrenching the bloat.
 
 ---
 
@@ -44,26 +98,50 @@ Then give each page one real `<h1>`: on every page, select the main headline
 
 ---
 
-## P0.2 — One phone number: 321-209-0495
+## P0.2 — One phone number: 321-209-0495 — ✅ DONE 2026-07-26
 
-**Why:** the homepage JSON-LD publishes `5087260695` (a Massachusetts area
-code) while the visible site uses `321-209-0495`.
+**What this actually was:** `5087260695` is **Craig's personal cell** (the
+direct host line). `321-209-0495` is the Havens' business number, which forwards
+to that cell. Both reach Craig — so nothing was broken for guests. The problem
+was that a personal mobile was published as the business's canonical
+`telephone` in machine-readable structured data, where aggregators and scrapers
+pick it up and it cannot practically be recalled.
 
-1. **Wix Dashboard → Settings → Business Info → Phone.** Set to
-   `321-209-0495`. This is what feeds the auto-generated `LocalBusiness` schema.
-2. **Editor → footer** — check the number in every footer variant, desktop and
-   mobile.
-3. Check the **book pages** and **contact page** for hardcoded text numbers.
-4. If a **custom JSON-LD** block was added manually: **Dashboard → SEO → SEO
-   Tools → Structured Data Markup**, and fix `telephone` there too.
-5. Publish and verify:
-   ```
-   curl -s https://www.thefloridahavens.com/ | grep -o '5087260695'
-   ```
-   Expect **no output**.
+The business number is the right public value on both counts: it keeps the
+personal cell private, and being a forwarding number it can be re-pointed later
+without reprinting the web.
 
-Also update Google Business Profile if it carries the 508 number — NAP
-consistency matters more than the on-site value.
+**Root cause:** Wix auto-generates the homepage `LocalBusiness` JSON-LD from
+Settings → Business Info. The `phone` field there held the cell — so this was
+one field, not a schema edit.
+
+**Executed** via the Site Properties API with the field mask restricted to
+`phone`, so email, address, locale and currency could not be touched:
+
+```
+POST https://www.wixapis.com/site-properties/v4/properties/business-contact
+{ "businessContact": { "phone": "321-209-0495" },
+  "fields": { "paths": ["phone"] } }
+```
+
+**Verified live** (properties version 25):
+
+```
+telephone -> 321-209-0495     homepage JSON-LD
+5087260695                    0 occurrences on /, /contact,
+                              /book-the-florida-havens, /faqs
+```
+
+> Gotcha for next time: `GetSiteContext` served the stale `5087260695` for
+> minutes after the write succeeded. Verify against
+> `GET /site-properties/v4/properties`, not the context tool.
+
+**Still worth doing manually:** check **Google Business Profile** and any
+directory listings for the 508 number. Off-site NAP matters more than the
+on-site value, and it is outside what the site API can reach.
+
+Revert procedure: `backups/RESTORE.md`. Note that reverting re-publishes
+Craig's personal cell.
 
 ---
 
