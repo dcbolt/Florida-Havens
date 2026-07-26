@@ -10,6 +10,13 @@ What it captures, per URL:
   - full visible text (the irreplaceable asset — the copy)
   - title, meta description, canonical, robots meta, OG tags
   - heading outline, image alt inventory, byte weight
+  - contact links (tel:/mailto: hrefs) with their visible label
+
+That last one was a blind spot found on 2026-07-26: this tool originally stored
+visible text only, so it could not see /dunes-check-in's
+`<a href="tel:15087260695">contact the host</a>` — a tap-to-call to the host's
+personal cell behind an innocuous label. A number in an attribute is invisible to
+any text-only scan. See tools/phone-audit.py for the dedicated sweep.
 
 Output: backups/content-snapshot-<stamp>.json.gz  (stamp passed via --stamp)
 
@@ -79,6 +86,18 @@ def snapshot(url):
             t = re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", m.group(1))).strip()
             if t:
                 rec["headings"].append({"level": n, "text": html.unescape(t)[:200]})
+
+    # Contact links. The href is what actually dials — the visible label can
+    # say anything, so both are recorded.
+    rec["contact_links"] = []
+    for m in re.finditer(r'<a\b[^>]*href=["\'](tel:|mailto:)([^"\']*)["\'][^>]*>(.*?)</a>',
+                         h, re.I | re.S):
+        label = re.sub(r"\s+", " ", re.sub(r"<[^>]+>", "", m.group(3))).strip()
+        rec["contact_links"].append({
+            "kind": m.group(1).rstrip(":"),
+            "target": m.group(2),
+            "label": html.unescape(label)[:120],
+        })
 
     imgs = re.findall(r"<img\b[^>]*>", h, re.I)
     rec["images"] = {
