@@ -1,0 +1,89 @@
+@import 'tailwindcss';
+
+/*
+ * Brand tokens extracted from the live Wix site so look and feel carry over
+ * unchanged. Measured from the rendered homepage CSS:
+ *   #2b5672  deep ocean blue  — dominant brand accent (44 occurrences)
+ *   #C0A91E  brass/gold       — secondary accent (15 occurrences)
+ *   Cormorant Garamond        — display / headings
+ *   Raleway                   — body copy
+ *
+ * The Wix default link blue (#116dff) is intentionally NOT carried over — it
+ * is editor chrome, not brand.
+ */
+@theme {
+  --color-ocean-50: #f2f6f9;
+  --color-ocean-100: #dfe9f0;
+  --color-ocean-300: #8fadc2;
+  --color-ocean-500: #4a7794;
+  --color-ocean-700: #2b5672;
+  --color-ocean-900: #1a3648;
+  --color-brass-400: #d6c34f;
+  --color-brass-500: #c0a91e;
+  --color-sand-50: #faf8f4;
+  --color-sand-100: #f3f3f3;
+
+  --font-display: var(--font-cormorant), Georgia, 'Times New Roman', serif;
+  --font-body: var(--font-raleway), ui-sans-serif, system-ui, sans-serif;
+}
+
+:root {
+  --brand-ocean: #2b5672;
+  --brand-brass: #c0a91e;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: var(--font-body);
+  color: #1f2933;
+  background: #ffffff;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-display);
+  letter-spacing: -0.01em;
+}
+
+/* Respect users who ask for less motion — the live site animates regardless. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/*
+ * Visible keyboard focus. AUDIT FIX: Wix ships focus styling inconsistently
+ * across its widget set, which makes the booking flow hard to operate by
+ * keyboard.
+ */
+:focus-visible {
+  outline: 3px solid var(--brand-ocean);
+  outline-offset: 2px;
+}
+
+.skip-link {
+  position: absolute;
+  left: -9999px;
+}
+.skip-link:focus {
+  left: 1rem;
+  top: 1rem;
+  z-index: 100;
+  background: #fff;
+  padding: 0.75rem 1rem;
+  border: 2px solid var(--brand-ocean);
+  border-radius: 0.25rem;
+}
