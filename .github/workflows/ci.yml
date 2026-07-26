@@ -1,0 +1,69 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Lint
+        run: npx eslint .
+
+      - name: Typecheck
+        run: npx tsc --noEmit
+
+      - name: Build
+        run: npm run build
+
+      # Guards for the three regressions this rebuild exists to prevent. If any
+      # of these fire, the site has drifted back toward the live Wix behaviour.
+      - name: Assert SEO invariants in built output
+        run: |
+          npx next start -p 3111 &
+          for i in $(seq 1 40); do curl -sf -o /dev/null http://127.0.0.1:3111/ && break; sleep 1; done
+
+          fail=0
+          for path in "/" "/turtle-haven" "/book/turtle-haven" "/faqs" "/properties" "/guides"; do
+            html=$(curl -sS "http://127.0.0.1:3111$path")
+
+            h1=$(printf '%s' "$html" | grep -o '<h1' | wc -l | tr -d ' ')
+            if [ "$h1" != "1" ]; then
+              echo "::error::$path has $h1 <h1> elements, expected exactly 1"
+              fail=1
+            fi
+
+            if ! printf '%s' "$html" | grep -q 'application/ld+json'; then
+              echo "::error::$path has no JSON-LD"
+              fail=1
+            fi
+
+            if printf '%s' "$html" | grep -q '5087260695'; then
+              echo "::error::$path contains the retired 508 phone number"
+              fail=1
+            fi
+          done
+
+          # The booking widget must not be in the initial HTML.
+          if curl -sS http://127.0.0.1:3111/book/turtle-haven | grep -q '<iframe'; then
+            echo "::error::/book/turtle-haven ships an eager iframe; the widget must mount on click"
+            fail=1
+          fi
+
+          exit $fail
