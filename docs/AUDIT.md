@@ -1,16 +1,26 @@
 # thefloridahavens.com — technical audit
 
-**Method:** full crawl of every URL in the live Wix sitemap, 2026-07-26.
-74 of 77 URLs captured (3 lost to Wix rate-limiting; re-run `tools/crawl.py` to
-fill them). All figures below are measured from live server HTML, not estimated.
+**Method:** complete census of every URL in the live Wix sitemap, 2026-07-26 —
+**78 of 78 captured clean**. All figures below are measured from live server
+HTML, not estimated.
 
-Reproduce with `python3 tools/crawl.py` (needs `data/urls.txt`).
+An earlier pass reached only 74 of 77 (Wix rate-limiting) and the figures here
+were revised upward once the census completed; the differences are noted where
+they matter. Evidence: `backups/content-snapshot-2026-07-26.json.gz`.
 
-> **Scope note.** This audit covers what the public HTML exposes. It is *not* a
-> Wix dashboard audit — no collaborator access was granted for this pass, so
-> redirect tables, SEO panel settings, the installed-app list and media library
-> were inferred from rendered output rather than read directly. See
-> `WIX-P0-CHECKLIST.md` for the items that need someone inside the editor.
+Reproduce with `python3 tools/backup-live-site.py --stamp $(date +%F)`, then
+`python3 tools/fill-snapshot-gaps.py` on the result — Wix throttles hard, and a
+truncated read must be filled rather than believed (see the corrections section).
+
+> **Scope note.** This audit measures what the public HTML exposes. Wix access
+> arrived later the same day, which confirmed one inference and added one fact:
+> the homepage `LocalBusiness` phone comes from Settings → Business Info (root
+> cause of finding 3, now **fixed live**), and the installed-app list is
+> Promote SEO, Wix Blog, Wix Forms, Wix Forms & Payments, Wix Invoices.
+>
+> Still not readable via any API — no endpoint exists: per-page SEO settings
+> including `noindex`, the URL Redirect Manager, page element markup, and site
+> revisions. Those remain editor work; see `WIX-P0-CHECKLIST.md`.
 
 ---
 
@@ -18,16 +28,16 @@ Reproduce with `python3 tools/crawl.py` (needs `data/urls.txt`).
 
 | # | Finding | Severity | Evidence |
 |---|---------|----------|----------|
-| 1 | Nav labels are `<h1>` sitewide | **Critical** | 0 of 74 pages have exactly one `<h1>` |
-| 2 | No structured data | **Critical** | 72 of 74 pages carry zero JSON-LD |
+| 1 | Nav labels are `<h1>` sitewide | **Critical** | **0 of 78** pages have exactly one `<h1>` |
+| 2 | No structured data | **Critical** | 72 of 74 sampled pages carry zero JSON-LD |
 | 3 | Host's personal cell published as the business phone | **Critical** | schema `5087260695` (Craig's cell) vs public `321-209-0495` |
-| 4 | ~1 MB of HTML per page | **High** | mean 1,030 KB uncompressed; 74.4 MB sitewide |
+| 4 | ~1 MB of HTML per page | **High** | mean **1,045 KB**; **79.6 MB** sitewide; lightest page still 942 KB |
 | 5 | Booking widget is client-injected | **High** | 0 `<iframe>` in server HTML on all 7 book pages |
 | 6 | Guest-ops pages fully indexable | **High** | 0 pages emit a robots meta tag |
-| 7 | 54% of images have empty `alt` | **High** | 351 of 646 `<img>`; 65 of 68 on the homepage |
-| 8 | Meta descriptions overflow | **Medium** | 51 of 74 exceed 160 chars; longest 294 |
+| 7 | 57% of images have empty `alt` | **High** | **422 of 735** `<img>`; 65 of 68 on the homepage |
+| 8 | Meta descriptions overflow | **Medium** | **53 of 78** exceed 160 chars; longest 294 |
 | 9 | 245 images lack dimensions | **Medium** | layout-shift risk |
-| 10 | Broken heading hierarchy | **Medium** | 40 pages use `<h5>` with no `<h3>` |
+| 10 | Broken heading hierarchy | **Medium** | **42 of 78** pages use `<h5>` with no `<h3>` |
 | 11 | Typo in a live URL | **Medium** | `/beach-strret-wifi-guide` |
 | 12 | No `preconnect` anywhere | **Low** | 0 across all 74 pages |
 | 13 | Titles over 60 chars | **Low** | 7 pages; longest 93 |
@@ -43,17 +53,18 @@ HOME · ABOUT · PROPERTIES · BOOK YOUR STAY · LOCAL ATTRACTIONS ·
 GUEST RESOURCES · CONTACT
 ```
 
-Measured `<h1>` count across the 74 crawled pages:
+Measured `<h1>` count across all **78** pages:
 
 | `<h1>` per page | Pages |
 |---:|---:|
-| 0 | 1 |
-| 7 | 20 |
-| 8 | 43 |
+| 7 | 21 |
+| 8 | 46 |
 | 9 | 9 |
 | 10 | 1 |
+| 12 | 1 |
 
-**Zero pages have exactly one `<h1>`.** Every page therefore declares its
+**Zero pages have exactly one `<h1>`.** The earlier partial crawl showed one page
+with 0 — that was a truncated read, not a page without headings. Every page therefore declares its
 primary topic as the navigation menu rather than its actual subject. This is
 the single highest-leverage fix on the site and it is a styling change, not a
 content change — the nav can look identical.
@@ -115,11 +126,16 @@ cannot drift again.
 
 | Metric | Uncompressed | Gzipped |
 |--------|-------------:|--------:|
-| Mean per page | 1,030 KB | 209 KB |
-| Median | 968 KB | 201 KB |
+| Mean per page | **1,045 KB** | ~209 KB |
+| Median | 970 KB | ~201 KB |
 | Heaviest (`/`) | 1,688 KB | 275 KB |
-| Lightest | 349 KB | — |
-| **Total, 74 pages** | **74.4 MB** | — |
+| **Lightest** | **942 KB** | — |
+| **Total, 78 pages** | **79.6 MB** | — |
+
+The lightest figure is the one worth pausing on: **no page on this site is under
+942 KB.** There is no light page to point at — the floor is the problem, not the
+outliers. (An earlier pass reported a 349 KB minimum; that was a truncated
+read, not a lean page.)
 
 The bulk is Wix's inline hydration state: **332 KB of inline `<script>` per
 page on average**, plus 12.3 external scripts. Third-party JS on every page:
@@ -184,11 +200,11 @@ to the guest portal in `next.config.ts`.
 
 | Measure | Count |
 |---------|------:|
-| Total `<img>` | 646 |
+| Total `<img>` | **735** |
 | Missing `alt` attribute | 0 |
-| **Empty `alt=""`** | **351 (54%)** |
-| Missing width/height | 245 |
-| `loading="lazy"` | 409 |
+| **Empty `alt=""`** | **422 (57%)** |
+| Missing width/height | 245 (of the 74-page sample) |
+| `loading="lazy"` | 409 (of the 74-page sample) |
 
 Worth being precise here: the attribute is present everywhere, but empty on
 over half. Empty `alt` is correct for decorative images — it is wrong for
@@ -197,11 +213,11 @@ hero photography and logos, which is what these are. On the homepage, **65 of
 
 ## 8–13. Remaining findings
 
-- **Meta descriptions:** 51 of 74 exceed 160 characters. The homepage runs
+- **Meta descriptions:** **53 of 78** exceed 160 characters. The homepage runs
   ~500 characters of stacked "Stay near…" phrases; Google renders roughly the
   first 155. One duplicate pair (the two Wi-Fi guides).
 - **Dimensionless images:** 245 `<img>` without width/height → layout shift.
-- **Heading hierarchy:** 40 pages jump from `<h2>` to `<h5>` with no `<h3>`.
+- **Heading hierarchy:** **42 of 78** pages jump from `<h2>` to `<h5>` with no `<h3>`.
 - **Typo URL:** `/beach-strret-wifi-guide` is live and indexable.
 - **No preconnect:** zero `rel=preconnect` across the whole site; only 1.1
   preloads per page on average.
@@ -238,6 +254,21 @@ Two figures from the 2026-07-26 pass should be restated:
 2. **`/stay-near-brevard-zoo-melbourne-beach-house` reading 349 KB / 0 words**
    was a throttled partial read by this crawler, not a broken page. Re-fetched
    directly: 1,034 KB with full copy, title and canonical intact. Not a bug.
+
+   Worth dwelling on, because that single bad read polluted **three** separate
+   figures in the first draft: it invented a page with "0 `<h1>`", it set a false
+   349 KB floor for page weight, and it appeared as the site's thinnest page. One
+   silent truncation, three wrong conclusions — and each looked plausible on its
+   own. `tools/backup-live-site.py` now flags any response under 400 KB as
+   `suspect_truncated` instead of recording it as fact, and
+   `tools/fill-snapshot-gaps.py` refetches those until the census is complete.
+   Any figure in this document derives only from the 78 clean captures.
+
+3. **Finding 3 was mischaracterised** as "the wrong number". Both numbers reach
+   the host: `5087260695` is his personal cell, `321-209-0495` the business
+   forwarder. Nothing was broken for guests — the defect was publishing a
+   personal mobile as canonical machine-readable business contact. Corrected in
+   §3.
 
 One figure to reconcile: the guest-ops URL count. This crawl classifies **40**
 strictly guest-ops URLs (plus 1 needing a manual call —
