@@ -20,6 +20,7 @@ over to the new site.
 | P0.6 gallery dupes | **Manual** — editor content |
 | P0.7 book page order | **Manual** — editor content |
 | P0.8 PSI baseline | **Devin/Grok** — blocked in this sandbox |
+| P0.9 two `tel:` links → 508 | **Manual** — hardcoded in page content, verified on 2 pages |
 
 Ordered by return on effort. **P0.1 is worth more than the rest combined.**
 
@@ -273,6 +274,44 @@ it loads.
 
 This is the pattern already implemented in `components/BookingMount.tsx` if you
 want to see the target behaviour.
+
+---
+
+## P0.9 — Repoint two `tel:` links off the host's personal cell — VERIFIED, 2 pages
+
+Found after P0.2 shipped, and **not** covered by it. P0.2 fixed the
+auto-generated schema; these are hardcoded links inside page content, which no
+API can reach.
+
+Two pages contain a tap-to-call to Craig's personal cell behind a neutral label:
+
+| Page | Current href | Visible label | Change to |
+|---|---|---|---|
+| `/dunes-check-in` | `tel:15087260695` | "contact the host" | `tel:+13212090495` |
+| `/beach-street-check-in` | `tel:15087260695` | "contact the host" | `tel:+13212090495` |
+
+Confirmed independently twice — by Grok's 2-pass sweep (77 URLs, 0 unstable
+results) and by direct fetch. `/beach-street-check-in` also carries a correct
+`tel:3212090495` in the footer, so only the in-content link needs changing.
+
+**The label can stay "contact the host"** — the business number forwards to
+Craig, so the guest experience is unchanged. Only the dial target moves.
+
+Why this matters more than a visible number: nothing on screen looks wrong. A
+guest taps a neutral link and reaches a personal mobile, and no amount of
+proof-reading the page would surface it.
+
+1. **Editor → the page →** click the "contact the host" text → the link icon.
+2. Change the phone to **321-209-0495**. Wix writes `tel:` for you.
+3. Publish, then verify:
+   ```
+   curl -s https://www.thefloridahavens.com/dunes-check-in | grep -o 'tel:[0-9+]*'
+   curl -s https://www.thefloridahavens.com/beach-street-check-in | grep -o 'tel:[0-9+]*'
+   ```
+   Expect **no `508`** in the output on either.
+
+Note both pages are also on the P0.3 `noindex` list. Fix the link anyway —
+`noindex` removes them from search, not from guests who hold the link.
 
 ---
 
