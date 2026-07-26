@@ -63,7 +63,7 @@ them to an external 301 — no other edit needed.
 | `/dunes-beach-guide` | `301` | `GUEST_PORTAL_TARGET` | 959 | 413 |
 | `/dunes-check-in` | `301` | `GUEST_PORTAL_TARGET` | 947 | 191 |
 | `/dunes-check-out` | `301` | `GUEST_PORTAL_TARGET` | 967 | 392 |
-| `/dunes-emergency-guide` | `301` | `GUEST_PORTAL_TARGET` | 0 | — |
+| `/dunes-emergency-guide` | `301` | `GUEST_PORTAL_TARGET` | 968 | 634 |
 | `/dunes-ev-charging` | `301` | `GUEST_PORTAL_TARGET` | 949 | 228 |
 | `/dunes-guide-book` | `301` | `GUEST_PORTAL_TARGET` | 1076 | 457 |
 | `/dunes-house-guide` | `301` | `GUEST_PORTAL_TARGET` | 988 | 350 |
@@ -74,7 +74,7 @@ them to an external 301 — no other edit needed.
 | `/dunes-pool-guide` | `301` | `GUEST_PORTAL_TARGET` | 968 | 352 |
 | `/dunes-sea-turtle-guide` | `301` | `GUEST_PORTAL_TARGET` | 954 | 352 |
 | `/dunes-tv-entertainment-guide` | `301` | `GUEST_PORTAL_TARGET` | 953 | 209 |
-| `/dunes-waste-management` | `301` | `GUEST_PORTAL_TARGET` | 0 | — |
+| `/dunes-waste-management` | `301` | `GUEST_PORTAL_TARGET` | 946 | 271 |
 | `/dunes-wifi-guide` | `301` | `GUEST_PORTAL_TARGET` | 946 | 118 |
 | `/turtle-haven-virtual-tour` | `301` | `GUEST_PORTAL_TARGET` | 949 | 88 |
 
@@ -109,7 +109,7 @@ them to an external 301 — no other edit needed.
 | `/cape-canaveral-cruise-port-beach-stay` | `301` | `/guides/cape-canaveral-cruise-port` | 1033 | 492 |
 | `/local-attractions-melbourne-beach` | `301` | `/guides/local-attractions` | 1057 | 677 |
 | `/stay-near-brevard-zoo-melbourne-beach-house` | `301` | `/guides/brevard-zoo` | 349 | 0 |
-| `/stay-near-space-coast-rocket-launches-kennedy-space-center-beach-house` | `301` | `/guides/space-coast-rocket-launches` | 0 | — |
+| `/stay-near-space-coast-rocket-launches-kennedy-space-center-beach-house` | `301` | `/guides/space-coast-rocket-launches` | 1027 | 580 |
 | `/things-to-do-indialantic-melbourne-beach` | `301` | `/guides/things-to-do-indialantic` | 1040 | 666 |
 | `/travel-with-your-pets` | `301` | `/guides/travel-with-pets` | 951 | 340 |
 | `/usssa-space-coast-complex-vacation-rental` | `301` | `/guides/usssa-space-coast-complex` | 998 | 516 |
