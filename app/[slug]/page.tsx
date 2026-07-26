@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 import { PROPERTIES, getProperty, HOMES } from '@/content/properties'
+import { guidesFeaturing } from '@/content/guides'
 import { PropertyJsonLd, BreadcrumbJsonLd } from '@/components/JsonLd'
 import { SITE } from '@/content/site'
 
@@ -52,6 +53,7 @@ export default async function PropertyPage({
   const siblings = HOMES.filter(
     (h) => h.slug !== property.slug && h.campus === property.campus
   )
+  const relatedGuides = guidesFeaturing(property.slug)
 
   return (
     <>
@@ -175,6 +177,31 @@ export default async function PropertyPage({
             </a>
           </div>
         </div>
+
+        {relatedGuides.length > 0 && (
+          <section className="mt-16">
+            <h2 className="font-display text-2xl text-ocean-700">
+              While you are here
+            </h2>
+            <ul className="mt-5 grid gap-3 sm:grid-cols-2">
+              {relatedGuides.map((g) => (
+                <li key={g.slug}>
+                  <Link
+                    href={`/guides/${g.slug}`}
+                    className="block rounded-sm border border-black/10 p-4 transition-colors hover:border-ocean-300 hover:bg-sand-50"
+                  >
+                    <span className="font-display text-base text-ocean-700">
+                      {g.h1}
+                    </span>
+                    <span className="mt-1 block text-sm text-neutral-600">
+                      {g.description}
+                    </span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
 
         {siblings.length > 0 && (
           <section className="mt-16">

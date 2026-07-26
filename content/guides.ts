@@ -135,3 +135,16 @@ export const GUIDES: Guide[] = [
 export function getGuide(slug: string) {
   return GUIDES.find((g) => g.slug === slug)
 }
+
+/**
+ * Guides that feature a given property.
+ *
+ * The `featured` lists point guide -> property; this inverts them so property
+ * pages can link back. Without it the link graph is one-directional and every
+ * guide has exactly one inbound link (from /guides) — thin for the pages that
+ * chase non-brand search intent, which are the ones that need internal signal
+ * most.
+ */
+export function guidesFeaturing(propertySlug: string): Guide[] {
+  return GUIDES.filter((g) => g.featured.includes(propertySlug))
+}

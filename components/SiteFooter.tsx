@@ -103,6 +103,11 @@ export function SiteFooter() {
               </Link>
             </li>
             <li>
+              <Link href="/guest-blog" className="hover:text-ocean-700">
+                Guest Stories
+              </Link>
+            </li>
+            <li>
               <Link href="/faqs" className="hover:text-ocean-700">
                 FAQs
               </Link>
