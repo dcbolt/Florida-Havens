@@ -104,12 +104,37 @@ export default async function PropertyPage({
       </nav>
 
       <section className="mx-auto max-w-5xl px-4 py-12 sm:px-6">
-        <h2 className="font-display text-3xl text-ocean-700">
+        {/* Spec row — every value generated from the live site, not guessed. */}
+        <dl className="flex flex-wrap gap-x-8 gap-y-3 border-y border-black/10 py-5 text-sm">
+          {[
+            ['Guests', `${property.sleeps}`],
+            ['Bedrooms', `${property.bedrooms} king`],
+            ['Baths', `${property.baths}`],
+            ['Amenities', property.amenitySummary],
+          ].map(([k, v]) => (
+            <div key={k}>
+              <dt className="text-xs uppercase tracking-[0.14em] text-neutral-500">
+                {k}
+              </dt>
+              <dd className="mt-1 text-neutral-800">{v}</dd>
+            </div>
+          ))}
+        </dl>
+
+        <h2 className="mt-12 font-display text-3xl text-ocean-700">
           Welcome to {property.name}
         </h2>
-        <p className="mt-4 max-w-3xl text-base leading-relaxed text-neutral-700">
-          {property.intro}
-        </p>
+        {/* Body copy migrated verbatim from the live Wix page. */}
+        {(property.welcome.length ? property.welcome : [property.intro]).map(
+          (para) => (
+            <p
+              key={para.slice(0, 40)}
+              className="mt-4 max-w-3xl text-base leading-relaxed text-neutral-700"
+            >
+              {para}
+            </p>
+          )
+        )}
 
         <h2 className="mt-14 font-display text-3xl text-ocean-700">
           Plan your visit

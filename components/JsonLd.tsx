@@ -89,19 +89,25 @@ export function PropertyJsonLd({ property }: { property: Property }) {
         url: `${SITE.url}/${property.slug}`,
         telephone: SITE.phone,
         brand: { '@id': `${SITE.url}/#organization` },
-        address: { ...POSTAL, addressLocality: property.locality },
-        ...(property.bedrooms
-          ? { numberOfBedrooms: property.bedrooms }
-          : {}),
-        ...(property.sleeps
-          ? {
-              occupancy: {
-                '@type': 'QuantitativeValue',
-                maxValue: property.sleeps,
-                unitText: 'guests',
-              },
-            }
-          : {}),
+        address: {
+          ...POSTAL,
+          addressLocality: property.locality,
+          postalCode: property.postalCode,
+        },
+        /**
+         * These come from content/property-facts.ts, generated from the live
+         * site. They were previously hand-guessed and wrong on five of six
+         * homes — publishing an inflated occupancy is worse than omitting it,
+         * so no fallbacks here: if the facts module is incomplete the build
+         * fails rather than shipping a guess.
+         */
+        numberOfBedrooms: property.bedrooms,
+        numberOfBathroomsTotal: property.baths,
+        occupancy: {
+          '@type': 'QuantitativeValue',
+          maxValue: property.sleeps,
+          unitText: 'guests',
+        },
         amenityFeature: property.highlights.map((h) => ({
           '@type': 'LocationFeatureSpecification',
           name: h,

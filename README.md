@@ -84,7 +84,8 @@ components/
   JsonLd.tsx            LodgingBusiness / VacationRental / FAQPage / Breadcrumb
 content/
   site.ts               brand facts — single source for the phone number
-  properties.ts         6 properties, copy + heroes from the live site
+  properties.ts         6 properties — editorial copy only, no countable facts
+  property-facts.ts     occupancy/bedrooms/baths/locality + WELCOME copy (generated)
   faqs.ts               21 Q&As lifted from the live /faqs
   guides.ts             10 SEO demand pages
   page-body.ts          ~7,100 words of body copy migrated from Wix (generated)
@@ -92,6 +93,10 @@ content/
 tools/
   crawl.py              the crawler behind docs/AUDIT.md
   extract-copy.py       regenerates content/page-body.ts from the live pages
+  gen-property-facts.py regenerates content/property-facts.ts from a snapshot
+  phone-audit.py        sitewide tel:/text/JSON-LD phone exposure sweep
+  backup-live-site.py   content snapshot of every sitemap URL
+  fill-snapshot-gaps.py re-fetches URLs a snapshot lost to throttling
   weigh.py              per-page subresource weight measurement
 data/
   pages.json            raw crawl output (evidence)
@@ -111,6 +116,7 @@ data/
 | Empty `alt` on heroes | `heroAlt` required per property | `content/properties.ts` |
 | 500-char meta descriptions | ≤155 chars, typed | `content/*.ts` |
 | No preconnect | image origin preconnected | `app/layout.tsx` |
+| Invented occupancy/bedroom counts | generated from the live site | `content/property-facts.ts` |
 
 ## Content migration
 
@@ -131,9 +137,10 @@ appearing on 5+ of the fetched pages is treated as site chrome and dropped.
 
 - **Guesty listing IDs / widget URLs** → wire `BookingMount`'s `embedUrl`.
   Until then it renders an explicit placeholder, not a broken frame.
-- **Property page long-form copy** — the six property pages use the live meta
-  descriptions and highlight bullets; their full body sections
-  (`WELCOME TO…` / `GUEST FEEDBACK` testimonials) are not yet migrated.
+- **Guest testimonials** — the six property pages carry `GUEST FEEDBACK` quotes
+  with real guest first names and cities. Deliberately **not** migrated:
+  republishing attributed personal content on a new domain needs sign-off first.
+  Everything else from those pages is migrated.
 - **Search Console + GA4 access** — no ranking or conversion claim is made
   anywhere in this repo without it.
 - **PSI mobile baseline** on the live site before the Wix P0 fixes land.

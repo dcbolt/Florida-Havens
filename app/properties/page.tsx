@@ -49,9 +49,7 @@ export default function PropertiesPage() {
                   {p.name}
                 </h3>
                 <p className="mt-1 text-xs uppercase tracking-[0.14em] text-neutral-500">
-                  {p.locality}
-                  {p.bedrooms ? ` · ${p.bedrooms} bedrooms` : ''}
-                  {p.sleeps ? ` · sleeps ${p.sleeps}` : ''}
+                  {p.locality} · {p.bedrooms} bedrooms · sleeps {p.sleeps}
                 </p>
                 <p className="mt-3 text-sm leading-relaxed text-neutral-600">
                   {p.intro}
@@ -81,8 +79,7 @@ export default function PropertiesPage() {
                   {p.name}
                 </h3>
                 <p className="mt-1 text-xs uppercase tracking-[0.14em] text-neutral-500">
-                  {p.locality}
-                  {p.sleeps ? ` · sleeps ${p.sleeps}` : ''}
+                  {p.locality} · sleeps {p.sleeps}
                 </p>
                 <p className="mt-3 text-sm leading-relaxed text-neutral-600">
                   {p.intro}

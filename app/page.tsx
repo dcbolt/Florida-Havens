@@ -99,9 +99,7 @@ export default function HomePage() {
                   {p.name}
                 </h3>
                 <p className="mt-1 text-sm text-neutral-600">
-                  {p.locality}
-                  {p.bedrooms ? ` · ${p.bedrooms} bedrooms` : ''}
-                  {p.sleeps ? ` · sleeps ${p.sleeps}` : ''}
+                  {p.locality} · {p.bedrooms} bedrooms · sleeps {p.sleeps}
                 </p>
               </Link>
             </li>
