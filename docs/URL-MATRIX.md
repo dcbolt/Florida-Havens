@@ -34,7 +34,7 @@ them to an external 301 — no other edit needed.
 | **Total** | **77** |
 
 
-## guest-ops → Media Haven (never on marketing domain) (39)
+## guest-ops → Media Haven (never on marketing domain) (36)
 
 | Live URL | Action | Destination | Live KB | Words |
 |---|---|---|---:|---:|
@@ -49,7 +49,6 @@ them to an external 301 — no other edit needed.
 | `/beach-street-house-guide` | `301` | `GUEST_PORTAL_TARGET` | 987 | 295 |
 | `/beach-street-kitchen-guide` | `301` | `GUEST_PORTAL_TARGET` | 952 | 292 |
 | `/beach-street-laundry-guide` | `301` | `GUEST_PORTAL_TARGET` | 949 | 189 |
-| `/beach-street-meet-your-hosts` | `301` | `GUEST_PORTAL_TARGET` | 1012 | 366 |
 | `/beach-street-parking` | `301` | `GUEST_PORTAL_TARGET` | 945 | 145 |
 | `/beach-street-pool-spa` | `301` | `GUEST_PORTAL_TARGET` | 965 | 292 |
 | `/beach-street-sea-turtle-guide` | `301` | `GUEST_PORTAL_TARGET` | 954 | 353 |
@@ -69,14 +68,12 @@ them to an external 301 — no other edit needed.
 | `/dunes-house-guide` | `301` | `GUEST_PORTAL_TARGET` | 988 | 350 |
 | `/dunes-kitchen-guide` | `301` | `GUEST_PORTAL_TARGET` | 952 | 285 |
 | `/dunes-laundry-guide` | `301` | `GUEST_PORTAL_TARGET` | 949 | 189 |
-| `/dunes-meet-your-hosts` | `301` | `GUEST_PORTAL_TARGET` | 1012 | 369 |
 | `/dunes-parking` | `301` | `GUEST_PORTAL_TARGET` | 967 | 179 |
 | `/dunes-pool-guide` | `301` | `GUEST_PORTAL_TARGET` | 968 | 352 |
 | `/dunes-sea-turtle-guide` | `301` | `GUEST_PORTAL_TARGET` | 954 | 352 |
 | `/dunes-tv-entertainment-guide` | `301` | `GUEST_PORTAL_TARGET` | 953 | 209 |
 | `/dunes-waste-management` | `301` | `GUEST_PORTAL_TARGET` | 946 | 271 |
 | `/dunes-wifi-guide` | `301` | `GUEST_PORTAL_TARGET` | 946 | 118 |
-| `/turtle-haven-virtual-tour` | `301` | `GUEST_PORTAL_TARGET` | 949 | 88 |
 
 ## 1:1 URL, no redirect needed (16)
 
@@ -126,6 +123,13 @@ them to an external 301 — no other edit needed.
 | `/book-the-florida-havens` | `301` | `/book/the-florida-havens` | 946 | 125 |
 | `/book-turtle-haven` | `301` | `/book/turtle-haven` | 942 | 122 |
 
+## brand content, not guest-ops — the Wambolt family origin story belongs with /about (2)
+
+| Live URL | Action | Destination | Live KB | Words |
+|---|---|---|---:|---:|
+| `/beach-street-meet-your-hosts` | `301` | `/about` | 1012 | 366 |
+| `/dunes-meet-your-hosts` | `301` | `/about` | 1012 | 369 |
+
 ## 1:1 blog post (1)
 
 | Live URL | Action | Destination | Live KB | Words |
@@ -137,6 +141,12 @@ them to an external 301 — no other edit needed.
 | Live URL | Action | Destination | Live KB | Words |
 |---|---|---|---:|---:|
 | `/beach-strret-wifi-guide` | `301` | `GUEST_PORTAL_TARGET` | 947 | 133 |
+
+## demand content, not guest-ops — a virtual tour is a pre-booking conversion asset; tour embed not migrated, so folded into the property page (1)
+
+| Live URL | Action | Destination | Live KB | Words |
+|---|---|---|---:|---:|
+| `/turtle-haven-virtual-tour` | `301` | `/turtle-haven` | 949 | 88 |
 
 ## demand content, not guest-ops — live title is "Space Coast Rocket Launch Schedule"; folded into the rocket guide (1)
 

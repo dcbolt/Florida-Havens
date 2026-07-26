@@ -10,6 +10,31 @@
  *
  * `liveKb` / `words` are the measured live values, kept as the evidence trail
  * for why a page was classed thin or retired.
+ *
+ * CLASSIFICATION CAVEAT (2026-07-26). The original pass classified by SLUG WORD
+ * rather than page intent, which swept three demand-side pages into the
+ * guest-ops bucket:
+ *
+ *   /turtle-haven-virtual-tour   a pre-booking conversion asset → /turtle-haven
+ *   /dunes-meet-your-hosts       the Wambolt family origin story → /about
+ *   /beach-street-meet-your-hosts  same → /about
+ *
+ * Same root cause as the /beach-street-shuttle-launches miss Grok caught: **a
+ * slug is not an intent.** After that first miss only the one instance was
+ * fixed, not the bucket — hence this second pass.
+ *
+ * Still a judgement call, deliberately left routed to the portal and flagged for
+ * Devin rather than silently decided: `/dunes-amenities` and
+ * `/beach-street-amenities`. Their titles and descriptions are keyword-targeted
+ * ("Luxury Vacation Homes Florida Amenities") but the bodies are in-stay
+ * instructions — hair dryer, washer/dryer, "contact the host". If the amenity
+ * list is wanted as pre-booking content it should be merged into the property
+ * pages, not redirected.
+ *
+ * Note on false positives: a keyword scan for demand language flags 14 of these
+ * 41, but 11 are boilerplate — "for your beachfront stay near Orlando" is
+ * appended to nearly every description on the site, including genuine in-stay
+ * pages like the BBQ and check-out guides. Do not bulk-reclassify on that signal.
  */
 import { GUEST_PORTAL } from './site'
 
@@ -61,7 +86,7 @@ export const URL_MATRIX: UrlRow[] = [
   { from: '/beach-street-house-guide', to: GUEST_PORTAL_TARGET, action: '301', note: 'guest-ops → Media Haven (never on marketing domain)', liveKb: 987, words: 295 },
   { from: '/beach-street-kitchen-guide', to: GUEST_PORTAL_TARGET, action: '301', note: 'guest-ops → Media Haven (never on marketing domain)', liveKb: 952, words: 292 },
   { from: '/beach-street-laundry-guide', to: GUEST_PORTAL_TARGET, action: '301', note: 'guest-ops → Media Haven (never on marketing domain)', liveKb: 949, words: 189 },
-  { from: '/beach-street-meet-your-hosts', to: GUEST_PORTAL_TARGET, action: '301', note: 'guest-ops → Media Haven (never on marketing domain)', liveKb: 1012, words: 366 },
+  { from: '/beach-street-meet-your-hosts', to: '/about', action: '301', note: 'brand content, not guest-ops — the Wambolt family origin story belongs with /about', liveKb: 1012, words: 366 },
   { from: '/beach-street-parking', to: GUEST_PORTAL_TARGET, action: '301', note: 'guest-ops → Media Haven (never on marketing domain)', liveKb: 945, words: 145 },
   { from: '/beach-street-pool-spa', to: GUEST_PORTAL_TARGET, action: '301', note: 'guest-ops → Media Haven (never on marketing domain)', liveKb: 965, words: 292 },
   { from: '/beach-street-sea-turtle-guide', to: GUEST_PORTAL_TARGET, action: '301', note: 'guest-ops → Media Haven (never on marketing domain)', liveKb: 954, words: 353 },
@@ -93,7 +118,7 @@ export const URL_MATRIX: UrlRow[] = [
   { from: '/dunes-house-guide', to: GUEST_PORTAL_TARGET, action: '301', note: 'guest-ops → Media Haven (never on marketing domain)', liveKb: 988, words: 350 },
   { from: '/dunes-kitchen-guide', to: GUEST_PORTAL_TARGET, action: '301', note: 'guest-ops → Media Haven (never on marketing domain)', liveKb: 952, words: 285 },
   { from: '/dunes-laundry-guide', to: GUEST_PORTAL_TARGET, action: '301', note: 'guest-ops → Media Haven (never on marketing domain)', liveKb: 949, words: 189 },
-  { from: '/dunes-meet-your-hosts', to: GUEST_PORTAL_TARGET, action: '301', note: 'guest-ops → Media Haven (never on marketing domain)', liveKb: 1012, words: 369 },
+  { from: '/dunes-meet-your-hosts', to: '/about', action: '301', note: 'brand content, not guest-ops — the Wambolt family origin story belongs with /about', liveKb: 1012, words: 369 },
   { from: '/dunes-parking', to: GUEST_PORTAL_TARGET, action: '301', note: 'guest-ops → Media Haven (never on marketing domain)', liveKb: 967, words: 179 },
   { from: '/dunes-pool-guide', to: GUEST_PORTAL_TARGET, action: '301', note: 'guest-ops → Media Haven (never on marketing domain)', liveKb: 968, words: 352 },
   { from: '/dunes-sea-turtle-guide', to: GUEST_PORTAL_TARGET, action: '301', note: 'guest-ops → Media Haven (never on marketing domain)', liveKb: 954, words: 352 },
@@ -118,7 +143,7 @@ export const URL_MATRIX: UrlRow[] = [
   { from: '/things-to-do-indialantic-melbourne-beach', to: '/guides/things-to-do-indialantic', action: '301', note: 'SEO demand page → /guides/*', liveKb: 1040, words: 666 },
   { from: '/travel-with-your-pets', to: '/guides/travel-with-pets', action: '301', note: 'SEO demand page → /guides/*', liveKb: 951, words: 340 },
   { from: '/turtle-haven', to: '/turtle-haven', action: 'KEEP', note: '1:1 URL, no redirect needed', liveKb: 1302, words: 452 },
-  { from: '/turtle-haven-virtual-tour', to: GUEST_PORTAL_TARGET, action: '301', note: 'guest-ops → Media Haven (never on marketing domain)', liveKb: 949, words: 88 },
+  { from: '/turtle-haven-virtual-tour', to: '/turtle-haven', action: '301', note: 'demand content, not guest-ops — a virtual tour is a pre-booking conversion asset; tour embed not migrated, so folded into the property page', liveKb: 949, words: 88 },
   { from: '/usssa-space-coast-complex-vacation-rental', to: '/guides/usssa-space-coast-complex', action: '301', note: 'SEO demand page → /guides/*', liveKb: 998, words: 516 },
 ]
 
