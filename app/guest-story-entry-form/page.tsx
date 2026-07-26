@@ -46,7 +46,7 @@ export default function GuestStoryFormPage() {
         <div className="grid gap-5 sm:grid-cols-2">
           <div>
             <label htmlFor="first" className="text-sm font-medium">
-              First name <span aria-hidden className="text-brass-500">*</span>
+              First name <span aria-hidden className="text-brass-700">*</span>
             </label>
             <input id="first" name="first" required className={FIELD} />
           </div>
@@ -60,7 +60,7 @@ export default function GuestStoryFormPage() {
 
         <div>
           <label htmlFor="email" className="text-sm font-medium">
-            Email <span aria-hidden className="text-brass-500">*</span>
+            Email <span aria-hidden className="text-brass-700">*</span>
           </label>
           <input id="email" name="email" type="email" required className={FIELD} />
         </div>
@@ -68,7 +68,7 @@ export default function GuestStoryFormPage() {
         <div>
           <label htmlFor="stayed" className="text-sm font-medium">
             Where did you stay?{' '}
-            <span aria-hidden className="text-brass-500">*</span>
+            <span aria-hidden className="text-brass-700">*</span>
           </label>
           <select id="stayed" name="stayed" required className={FIELD}>
             <option value="">Choose a home</option>
@@ -83,7 +83,7 @@ export default function GuestStoryFormPage() {
         <div>
           <label htmlFor="from" className="text-sm font-medium">
             Where are you from?{' '}
-            <span aria-hidden className="text-brass-500">*</span>
+            <span aria-hidden className="text-brass-700">*</span>
           </label>
           <input id="from" name="from" required className={FIELD} />
         </div>
@@ -91,7 +91,7 @@ export default function GuestStoryFormPage() {
         <div>
           <label htmlFor="story" className="text-sm font-medium">
             Tell us about your stay{' '}
-            <span aria-hidden className="text-brass-500">*</span>
+            <span aria-hidden className="text-brass-700">*</span>
           </label>
           <textarea id="story" name="story" rows={5} required className={FIELD} />
         </div>
@@ -114,7 +114,7 @@ export default function GuestStoryFormPage() {
           <label id="form-consent" htmlFor="consent" className="text-sm text-neutral-700">
             I agree to have any/all content from this form published online for
             other guests to enjoy.{' '}
-            <span aria-hidden className="text-brass-500">*</span>
+            <span aria-hidden className="text-brass-700">*</span>
           </label>
         </div>
 

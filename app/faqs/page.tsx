@@ -42,7 +42,7 @@ export default function FaqsPage() {
                   {f.q}
                   <span
                     aria-hidden
-                    className="mt-1 shrink-0 text-brass-500 transition-transform group-open:rotate-45"
+                    className="mt-1 shrink-0 text-ocean-700 transition-transform group-open:rotate-45"
                   >
                     +
                   </span>

@@ -19,7 +19,16 @@
   --color-ocean-700: #2b5672;
   --color-ocean-900: #1a3648;
   --color-brass-400: #d6c34f;
+  /**
+   * brass-500 is the brand gold lifted from the live site. Keep it for large
+   * decorative fills only — measured 2.35:1 on white and 2.22:1 on sand-50,
+   * which fails WCAG AA (4.5:1) and even the 3:1 non-text threshold.
+   */
   --color-brass-500: #c0a91e;
+  /** 3.15:1 on white — non-text UI affordances (icons, state indicators) only. */
+  --color-brass-600: #a5911a;
+  /** 4.96:1 on white, 4.68:1 on sand-50 — the only brass safe for text. */
+  --color-brass-700: #7f7014;
   --color-sand-50: #faf8f4;
   --color-sand-100: #f3f3f3;
 

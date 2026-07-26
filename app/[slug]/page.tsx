@@ -147,7 +147,7 @@ export default async function PropertyPage({
               key={h}
               className="flex gap-3 rounded-sm border border-black/10 bg-sand-50 p-4 text-sm text-neutral-700"
             >
-              <span aria-hidden className="text-brass-500">
+              <span aria-hidden className="text-brass-600">
                 ◆
               </span>
               {h}

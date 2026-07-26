@@ -32,6 +32,12 @@ jobs:
       - name: Build
         run: npm run build
 
+      # The site publishes an accessibility statement, so contrast is a stated
+      # commitment. The brand gold (#c0a91e) is 2.35:1 on white and was being
+      # used on the required-field asterisks.
+      - name: Assert WCAG AA contrast
+        run: python3 tools/check-contrast.py
+
       # Guards for the three regressions this rebuild exists to prevent. If any
       # of these fire, the site has drifted back toward the live Wix behaviour.
       - name: Assert SEO invariants in built output

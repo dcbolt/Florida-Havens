@@ -91,6 +91,7 @@ content/
   page-body.ts          ~7,100 words of body copy migrated from Wix (generated)
   url-matrix.ts         all 77 live URLs → generates the redirects
 tools/
+  check-contrast.py     WCAG AA gate for every colour pair in use
   crawl.py              the crawler behind docs/AUDIT.md
   extract-copy.py       regenerates content/page-body.ts from the live pages
   gen-property-facts.py regenerates content/property-facts.ts from a snapshot
@@ -117,6 +118,7 @@ data/
 | 500-char meta descriptions | ≤155 chars, typed | `content/*.ts` |
 | No preconnect | image origin preconnected | `app/layout.tsx` |
 | Invented occupancy/bedroom counts | generated from the live site | `content/property-facts.ts` |
+| Brand gold at 2.35:1 on text | tiered tokens, AA-gated in CI | `app/globals.css` + `tools/check-contrast.py` |
 
 ## Content migration
 
