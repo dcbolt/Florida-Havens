@@ -124,27 +124,62 @@ component — each renders as
 `<h1 class="font_0 wixui-rich-text__text" style="font-size:35px;">`. `font_0` is
 the theme's Heading 1 style. **They are editable.**
 
-## 1a. Change the nav labels' tag — try the safe path first
+## 1a. Change the nav labels' tag
 
-Wix Studio separates a text element's **HTML tag** from its **visual style**.
-This is the important difference from the classic editor.
+> **SETTLED 2026-07-26, in Studio.** Two things I had inferred were wrong:
+>
+> 1. **There is no separate tag selector.** The **Style** dropdown *is* the tag
+>    control — one dropdown sets both semantics and appearance, and each entry
+>    carries its own default size (Heading 1 = 82 px, Paragraph 1 = 18 px,
+>    Paragraph 2 = 16 px, Paragraph 3 = 14 px). Switching to any Paragraph level
+>    drops the label to that preset's size, so restoration is mandatory. The
+>    "tag-only, nothing to restore" path does not exist.
+> 2. **The nav is not in the header.** The Layers panel's **Header** bucket is
+>    empty. The desktop nav is a **collapsed hamburger icon** (top-left) — a
+>    widget floating over the hero section — at *every* breakpoint, not just
+>    mobile. This is very likely what the 64 `StylableHorizontalMenu` references
+>    in the live HTML actually are.
+>
+> The one prediction that held: the labels are genuine **Text** elements, and the
+> Style dropdown does operate on them. The current value reads `Heading 1*` — the
+> asterisk means overridden, consistent with the measured 35 px against the
+> theme's 82 px default.
 
-1. In the editor, click the header, then click into the **HOME** nav label until
-   the individual text element is selected.
-2. Open the text settings panel and look for a **tag / HTML tag / SEO tag**
-   selector — a dropdown that reads **H1** and offers `H1…H6` and `P` /
-   `Paragraph`. In Studio this usually sits in the text panel near the style
-   preset, sometimes behind an **SEO** or **Advanced** subsection or a small
-   `</>` icon.
-3. **If that tag selector exists: set it to `P` (Paragraph) and leave the visual
-   style untouched.** This is the whole fix, with zero visual change and nothing
-   to restore. Confirm the label still looks identical, then do the same for the
-   other six.
+### The real click path to a single label
 
-**Only if there is no separate tag selector**, fall back to changing the style
-preset from **Heading 1** to **Paragraph 2** — and then the text *will* resize, so
-immediately restore, via **Design → Customize** (or the text panel's custom
-settings):
+1. **Double-click the hamburger icon** → an **Edit Menu** button appears → click
+   it. This enters **Hamburger Menu Mode** (banner top-centre: *Hamburger Menu
+   Mode / Exit Mode*), which renders the menu open and editable in-canvas.
+2. Clicking a label once selects its **parent Container Box**, not the text. To
+   get the text itself: **right-click the label → "Overlapping Items" → pick the
+   `HOME` (Text) entry** from the stack list.
+3. **Double-click** the selected Text to enter inline edit. The **Text Settings**
+   panel opens, carrying the **Style** dropdown.
+
+### Before changing seven labels, check for a reusable preset
+
+Restoring font, weight, size, letter-spacing and colour by hand on 7 labels ×
+however many breakpoints carry overrides is the expensive path. Check whether
+Studio lets you **define a text style once and apply it**, which turns the job
+into one definition plus seven dropdown picks, with no per-label restoration and
+no per-breakpoint work — presets carry their own responsive definition.
+
+Look for a **Site Styles / Text Themes** editor (often near the Style dropdown as
+*Edit styles*, or under the main menu → **Site Styles**), then either:
+
+- **Add a new custom text style** — cleanest if Studio offers it. Name it
+  something like `Nav Link`, set it to render as a paragraph, give it the values
+  in the table below, then apply it to all seven labels.
+- **Or repurpose an unused preset.** `Paragraph 3` (14 px) is the likely
+  candidate. **Only if nothing else on the site uses it** — check for a usage
+  count or "used by N elements" indicator before touching it. Redefining a preset
+  that is in use elsewhere silently restyles those elements, which is a much
+  worse outcome than seven manual restorations. If you cannot determine usage,
+  do **not** repurpose it; fall back to per-label overrides.
+
+**If neither exists, do it per-label** with the values below.
+
+### The values to restore
 
 | Property | Value |
 |---|---|
@@ -155,22 +190,40 @@ settings):
 | Colour | theme `color_38` (whatever it already had — do not pick a new one) |
 
 These are measured from the live site, so matching them is pixel-identical.
+Letter-spacing and the colour swatch were **not** visible in the Text Settings
+panel on first look — they are probably behind the **Effects** expandable section
+or a separate Design/paintbrush panel. Find them, but see the next note before
+treating them as blocking.
 
 All seven labels: **HOME · ABOUT · PROPERTIES · BOOK YOUR STAY · LOCAL
 ATTRACTIONS · GUEST RESOURCES · CONTACT**
 
-**Breakpoints:** Studio uses responsive breakpoints (Desktop / Tablet / Mobile)
-rather than a separate mobile editor. The HTML tag is a property of the element
-and should carry across breakpoints, but **text styling can be overridden per
-breakpoint**. So: switch to Tablet and Mobile, confirm each label still renders
-at the right size and, if you had to use the fallback style path, re-apply the
-values there too. **Report whether the tag change carried across breakpoints or
-had to be repeated** — that is genuinely useful to know.
+> ### Get the tag right; do not block on pixel-perfect spacing
+>
+> These labels live inside a **collapsed hamburger menu**. A visitor only sees
+> them after tapping the icon — they are not a persistent header bar. So the
+> "don't change the look" rule, which is otherwise absolute in this brief, is
+> much cheaper to satisfy here than anywhere else on the site: font, weight and
+> **35 px** are what carry the look, and those three are all in the Text Settings
+> panel you already have open.
+>
+> If letter-spacing or the exact swatch prove hard to locate, **set the three you
+> can, ship it, and report the two you could not** rather than stalling Task 1 on
+> a hunt. A 0.05em difference inside a menu nobody has open is a far smaller
+> problem than 77 pages continuing to tell Google their subject is "HOME ABOUT
+> PROPERTIES". Do not, however, *guess* at a colour — leaving it as-inherited is
+> correct; picking a new one is not.
 
-There is also `StylableHorizontalMenu` markup on the page (64 references),
-probably the mobile menu or a secondary strip. It is **not** the source of the
-seven `<h1>`s. If it turns out to be a locked component with a fixed tag, leave
-it and say so.
+**Breakpoints:** Studio uses responsive breakpoints (Desktop / Tablet / Mobile).
+Because the nav is a hamburger at *every* breakpoint, there may be only one menu
+instance and one set of Text elements — in which case the style change applies
+everywhere and there is nothing to repeat. Check Tablet and Mobile after HOME is
+done and **report whether the change carried or had to be re-applied per
+breakpoint.** That single answer decides whether the remaining six labels are 6
+edits or 18.
+
+The 64 `StylableHorizontalMenu` references in the live HTML are most likely this
+hamburger widget itself, not a separate mobile menu as earlier docs guessed.
 
 ## 1b. Give each page exactly one real `<h1>`
 
@@ -210,8 +263,29 @@ that is not the page's real subject):
 
 ## 1c. Publish, then verify on the LIVE site
 
+**Do HOME alone first, publish, and verify it before touching the other six.**
+One label is a cheap, fully reversible test of the whole approach.
+
 Publish. Then open a **normal browser tab** (not the editor preview),
 hard-reload, and in DevTools console run:
+
+```js
+[...document.querySelectorAll('h1,h2,h3,p')]
+  .filter(e => e.innerText.trim() === 'HOME')
+  .map(e => e.tagName + ' ' + getComputedStyle(e).fontSize
+            + ' ' + getComputedStyle(e).letterSpacing)
+```
+
+**You do not need to open the menu to check this.** The seven labels are in the
+server-rendered HTML whether the hamburger is open or closed — that is how they
+were counted in the first place, from a plain `curl` with no JavaScript. A
+collapsed menu is hidden by CSS, not absent from the DOM.
+
+Expect `P 35px ...` — tag changed, size preserved. If it reports `H1`, the style
+change did not take; if it reports `P 16px`, the restore did not take.
+
+Once HOME is confirmed clean, do the remaining six, publish, and check whole
+pages:
 
 ```js
 [...document.querySelectorAll('h1')].map(h => h.innerText.trim())
