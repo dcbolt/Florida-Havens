@@ -144,15 +144,48 @@ page on average**, plus 12.3 external scripts. Third-party JS on every page:
 pages is pure overhead.
 
 Images are also the wrong formats: **2,772 PNG/JPG references against 53
-WebP/AVIF**.
+WebP/AVIF**. That is a count of *references in the markup*, not bytes — but the
+bytes have now been measured too, and they change the priority order of this
+whole audit.
 
-> **Scope of that claim.** It is a count of *references in the markup*, not a
-> measurement of *bytes served*. Wix's image CDN can transcode on delivery, so a
-> `.png` URL does not prove a PNG arrived. The honest version is: the site asks
-> for legacy formats by default, and nothing in the HTML indicates modern-format
-> delivery. Whether that costs real bytes is **unmeasured** — it needs the actual
-> response `Content-Type` and `Content-Length` per image, which is assigned but
-> not yet done. Do not quote this as a payload figure.
+### The images outweigh the HTML by 20–50× (measured 2026-07-26)
+
+Grok fetched every `static.wixstatic.com` URL referenced in the HTML and summed
+the actual response `Content-Length`, grouped by response `Content-Type`
+(`docs/tfh-metrics/image-payload-2026-07-26.json` in the media-haven repo):
+
+| Page | Refs | Fetched | Image bytes | Delivered as | HTML, uncompressed |
+|---|---:|---:|---:|---|---:|
+| `/` | 29 | 29/29 | **35,287,937 B** (35.3 MB) | PNG 35.28 MB (23 files) · JPEG 4 KB (5) | 1,688 KB |
+| `/turtle-haven` | 86 | 80/86 | **≥70,674,136 B** (70.7 MB) | JPEG 70.57 MB (76) · PNG 0.10 MB (3) | 1,302 KB |
+| `/book-turtle-haven` | 11 | 11/11 | **4,524,465 B** (4.5 MB) | PNG 4.52 MB (8) · JPEG 1.7 KB (2) | 942 KB |
+
+So on `/turtle-haven` the referenced media is roughly **54× the weight of the
+~1 MB HTML shell** that finding 4 is about. The HTML bloat is real and worth
+fixing, but it is not the dominant cost on the live site — the images are.
+
+**The format claim is now measured, not inferred.** Delivered `Content-Type` is
+overwhelmingly `image/jpeg` and `image/png`: Wix is **not** transcoding these
+asset URLs to WebP/AVIF. The reference count was directionally right about the
+cause; it just could not size it.
+
+> **Two caveats, and they matter.** (1) These are the asset URLs **as referenced
+> in the markup**. A browser requests Wix resize/quality variants of those URLs,
+> so real transfer is lower — treat these as an **upper bound**, not page weight.
+> The true figure comes from the PSI "total transfer size" in P0.8. (2) Grok's
+> table mixes units — its per-page total is MiB while its per-format split is
+> decimal MB, which is why 33.65 and 35.28 appear for the same homepage number.
+> The bytes above are authoritative; both derived figures are correct in their
+> own unit. Do not "fix" one against the other.
+>
+> `/turtle-haven` is **80 of 86** refs, so 70.7 MB is a floor.
+
+**Consequence for the live-site work:** P0.6 (duplicate gallery slides) and image
+sizing are worth materially more than their position in
+`WIX-P0-CHECKLIST.md` suggests — 86 media references on a single property page,
+delivered as full-size JPEG, is the largest single lever on live mobile
+performance. P0.1 is still first: it is an indexing defect, not a speed one, and
+the two do not compete.
 
 Measured result of the rebuild:
 

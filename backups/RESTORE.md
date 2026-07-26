@@ -30,10 +30,21 @@ change, **Wix Site History is the only true rollback.**
 ### Before any editor session, create a Site History restore point
 
 1. Wix Dashboard → the site → **Edit Site**
-2. In the editor: **Site** menu → **Site History** (or **Revisions**)
-3. Confirm a recent entry exists, and **Save** to create a fresh one before
-   editing. Wix also auto-saves a revision on each Save/Publish.
+2. In the editor: main menu → **Site History** (or **Revisions**)
+3. **Star / label the most recent existing entry.** Confirmed 2026-07-26 in Wix
+   Studio: Site History only labels saves that already exist — it cannot force a
+   new save-point independent of autosave, and **Save** is a no-op when there are
+   no unsaved edits. Labelling the current entry *is* the mechanism.
 4. Note the timestamp here in the Log so a rollback target is unambiguous.
+
+> **A revision dated before 2026-07-26 does not contain the P0.2 phone fix.**
+> The current restore point is `Pre-SEO-fixes baseline 2026-07-26`, pointing at
+> the **Jul 10, 2026 2:22 PM** revision — 16 days before the phone was corrected
+> via the Site Properties API. Editor revisions and Site Properties are separate
+> subsystems, and whether a restore reverts Business Info is untested. **After any
+> Site History restore, re-check Settings → Business Info → Phone reads
+> `321-209-0495`** and re-apply the call below if it does not.
+> Full baseline: [`../docs/BASELINE-2026-07-26.md`](../docs/BASELINE-2026-07-26.md).
 
 Wix exposes **no REST API** for site revisions/backups — the only `Backups`
 resource in the API spec is CMS-collection scoped

@@ -65,10 +65,17 @@ report what you actually observed.
 1. **Edit Site** (top right of the dashboard) to open the Studio editor.
 2. Open the main menu (the Wix logo / hamburger, top-left) → look for
    **Site History** or **Revisions**.
-3. Create a **new save / manual revision** so there is a known-good point that
-   predates all of today's work.
+3. **Star / label the most recent existing save.** Site History does *not* let
+   you force a new save-point independent of autosave — clicking **Save** does
+   nothing when there are no unsaved edits, so labelling the current entry is the
+   correct mechanism, not a workaround.
 4. **Report the exact timestamp and label of that revision.** A rollback target
    nobody wrote down is not a rollback target.
+5. **If that revision predates 2026-07-26, say so.** The P0.2 phone fix was made
+   on that date through the Site Properties API — a different subsystem from
+   editor revisions. Restoring an older revision may re-publish the host's
+   personal cell, so the rollback procedure needs a phone re-check bolted onto
+   it.
 
 ### 0b. Search Console baseline — capture BEFORE any change
 The dashboard home shows **"Search Performance on Google"**. This is the only

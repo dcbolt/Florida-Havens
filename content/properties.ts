@@ -64,7 +64,7 @@ const BASE_PROPERTIES: PropertyBase[] = [
     name: 'Turtle Haven',
     kind: 'home',
     campus: 'the-dunes',
-    title: 'Turtle Haven | The Florida Havens',
+    title: 'Turtle Haven | Beachfront Rental, Melbourne Beach FL',
     description:
       'A secluded luxury beachfront rental on sea turtle nesting grounds. Private pool and spa, ocean views, family amenities on the Space Coast.',
     hero: `${W}/f054db_fead69fd7ac24407982b6f8375112ad1~mv2.png/v1/fill/w_1920,h_1080,al_c/f054db_fead69fd7ac24407982b6f8375112ad1~mv2.png`,
@@ -84,7 +84,7 @@ const BASE_PROPERTIES: PropertyBase[] = [
     name: 'Shell Haven',
     kind: 'home',
     campus: 'the-dunes',
-    title: 'Shell Haven | The Florida Havens',
+    title: 'Shell Haven | Beachfront Rental, Melbourne Beach FL',
     description:
       'Luxury beachfront home on Florida’s Space Coast with king bedrooms, a private pool and spa, and exclusive beach access.',
     hero: `${W}/f054db_4758d285759b4f6ba21c000e666a7771~mv2.png/v1/fill/w_1920,h_1080,al_c/f054db_4758d285759b4f6ba21c000e666a7771~mv2.png`,
@@ -104,7 +104,7 @@ const BASE_PROPERTIES: PropertyBase[] = [
     name: 'Beach Haven',
     kind: 'home',
     campus: 'beach-street',
-    title: 'Beach Haven | The Florida Havens',
+    title: 'Beach Haven | Beachfront Rental, Indialantic FL',
     description:
       'Spacious, brand-new coastal retreat in Indialantic, FL. Private pool and oversized spa, minutes from beaches, dining and downtown Melbourne.',
     hero: `${W}/f054db_14bd6f0adcb24b29b6840742b464d19b~mv2.png/v1/fill/w_1920,h_1080,al_c/f054db_14bd6f0adcb24b29b6840742b464d19b~mv2.png`,
@@ -124,7 +124,7 @@ const BASE_PROPERTIES: PropertyBase[] = [
     name: 'Sea Haven',
     kind: 'home',
     campus: 'beach-street',
-    title: 'Sea Haven | The Florida Havens',
+    title: 'Sea Haven | Beachfront Rental, Indialantic FL',
     description:
       'Spacious beachfront escape on Florida’s Space Coast, steps from a private beach entrance. Book direct for the best rate.',
     hero: `${W}/f054db_8e2ebd0f2b0049dd905a9a6ea3af7f81~mv2.png/v1/fill/w_1920,h_1080,al_c/f054db_8e2ebd0f2b0049dd905a9a6ea3af7f81~mv2.png`,
@@ -143,7 +143,7 @@ const BASE_PROPERTIES: PropertyBase[] = [
     slug: 'the-dunes',
     name: 'The Havens at The Dunes',
     kind: 'campus',
-    title: 'The Havens at The Dunes | The Florida Havens',
+    title: 'The Havens at The Dunes | Beachfront, Melbourne Beach FL',
     description:
       'A private oceanfront compound in Melbourne Beach for reunions and large groups — two pools, two kitchens, protected reserve next door.',
     hero: `${W}/f054db_f32efb37368249f89e2a9a4911f60e5f~mv2.png/v1/fill/w_1920,h_1080,al_c/f054db_f32efb37368249f89e2a9a4911f60e5f~mv2.png`,
@@ -162,7 +162,7 @@ const BASE_PROPERTIES: PropertyBase[] = [
     slug: 'beach-street',
     name: 'The Havens at Beach Street',
     kind: 'campus',
-    title: 'The Havens at Beach Street | The Florida Havens',
+    title: 'The Havens at Beach Street | Beachfront, Indialantic FL',
     description:
       'Beach Haven and Sea Haven booked together in Indialantic — twice the space for reunions, wedding parties and tournament groups.',
     hero: `${W}/f054db_0b86e68f7a0743eaacbfd4b4c8c36887~mv2.png/v1/fill/w_1920,h_1080,al_c/f054db_0b86e68f7a0743eaacbfd4b4c8c36887~mv2.png`,

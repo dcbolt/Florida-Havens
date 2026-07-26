@@ -30,7 +30,12 @@ export async function generateMetadata({
   const p = getProperty(slug)
   if (!p) return {}
   return {
-    title: p.name,
+    // `absolute` bypasses the root layout's '%s | The Florida Havens' template.
+    // p.title already carries the town, and the suffix would push it past 60 and
+    // truncate the place qualifier — the one part the Search Console baseline
+    // says actually matters. Until 2026-07-26 this read `title: p.name`, so
+    // p.title fed only the OG tag and the ≤60 rule on it guarded nothing.
+    title: { absolute: p.title },
     description: p.description,
     alternates: { canonical: `/${p.slug}` },
     openGraph: {

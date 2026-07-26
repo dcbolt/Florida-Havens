@@ -254,7 +254,7 @@ The attribute exists; the field is blank. In Wix:
 
 ---
 
-## P0.6 — Trim duplicate gallery slides
+## P0.6 — Trim duplicate gallery slides · **re-ranked upward 2026-07-26**
 
 Several Pro Gallery instances repeat the same 3 images multiple times, inflating
 page weight with no editorial gain.
@@ -262,6 +262,17 @@ page weight with no editorial gain.
 1. Click the gallery → **Manage Media**.
 2. Remove exact duplicates.
 3. While there: **Settings → Loading behaviour → Lazy load / progressive**.
+
+**Why this moved up.** The image payload has now been measured rather than
+inferred: `/turtle-haven` references **86** media files totalling **≥70.7 MB**
+delivered as full-size JPEG, against a ~1.3 MB HTML shell — roughly **54×**. The
+homepage is 29 files / 35.3 MB, delivered as PNG. Full table and caveats in
+[`AUDIT.md`](AUDIT.md) — those are upper bounds for the referenced URLs, since a
+browser fetches Wix resize variants, so do not quote them as page weight.
+
+Practical effect: on live mobile, image weight is a bigger lever than the HTML
+bloat in P0.7. P0.1 still goes first — it is an indexing defect, not a speed one,
+so they are not competing for the same win.
 
 ---
 

@@ -64,6 +64,40 @@ jobs:
               echo "::error::$path contains the retired 508 phone number"
               fail=1
             fi
+
+            # Titles must survive in a SERP. Seven live Wix titles exceeded 60
+            # and truncated mid-phrase; the type carried a "<=60" comment but
+            # nothing enforced it, and the property titles were lengthened on
+            # 2026-07-26 to add a place qualifier. Enforce it on built output.
+            title=$(printf '%s' "$html" | grep -o '<title[^>]*>[^<]*</title>' \
+                    | head -1 | sed -E 's/<title[^>]*>(.*)<\/title>/\1/')
+            len=${#title}
+            if [ "$len" -gt 60 ]; then
+              echo "::error::$path <title> is $len chars (>60), truncates in search: $title"
+              fail=1
+            fi
+            if [ "$len" -lt 15 ]; then
+              echo "::error::$path <title> is only $len chars — empty or a template miss: $title"
+              fail=1
+            fi
+          done
+
+          # Search Console baseline (docs/BASELINE-2026-07-26.md): the entire
+          # named-impression tail is generic "sea haven" / "beach haven"
+          # collisions with unrelated businesses — including 158 impressions for
+          # "sea haven st augustine rental", 150 miles away — at average
+          # position 33.7. Every property title must name its own town.
+          for pair in "/turtle-haven:Melbourne Beach" "/shell-haven:Melbourne Beach" \
+                      "/beach-haven:Indialantic" "/sea-haven:Indialantic" \
+                      "/the-dunes:Melbourne Beach" "/beach-street:Indialantic"; do
+            p=${pair%%:*}; town=${pair#*:}
+            t=$(curl -sS "http://127.0.0.1:3111$p" \
+                | grep -o '<title[^>]*>[^<]*</title>' | head -1)
+            case "$t" in
+              *"$town"*) ;;
+              *) echo "::error::$p <title> does not name $town — a generic house name cannot rank: $t"
+                 fail=1 ;;
+            esac
           done
 
           # The booking widget must not be in the initial HTML.
