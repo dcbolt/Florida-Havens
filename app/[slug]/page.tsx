@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 import { PROPERTIES, getProperty, HOMES } from '@/content/properties'
 import { guidesFeaturing } from '@/content/guides'
+import { LazyEmbed } from '@/components/LazyEmbed'
 import { PropertyJsonLd, BreadcrumbJsonLd } from '@/components/JsonLd'
 import { SITE } from '@/content/site'
 
@@ -177,6 +178,26 @@ export default async function PropertyPage({
             </a>
           </div>
         </div>
+
+        {/*
+          Turtle Haven's tour page 301s to this route, so the tour has to be
+          acknowledged here or arrivals from that search get nothing.
+        */}
+        {property.slug === 'turtle-haven' && (
+          <section className="mt-14">
+            <h2 className="font-display text-2xl text-ocean-700">
+              Take a virtual tour
+            </h2>
+            <div className="mt-5">
+              <LazyEmbed
+                src={property.virtualTourUrl}
+                title={`Virtual tour of ${property.name}`}
+                cta="Start the tour"
+                note="The live site injects this tour client-side through a Wix HtmlComponent, so no embed URL exists in its HTML to migrate. Add virtualTourUrl in content/properties.ts once Devin supplies it from the editor."
+              />
+            </div>
+          </section>
+        )}
 
         {relatedGuides.length > 0 && (
           <section className="mt-16">

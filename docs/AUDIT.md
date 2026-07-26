@@ -182,6 +182,16 @@ paying for it on first paint. `components/BookingMount.tsx` renders real trust
 content immediately and mounts the widget on an explicit "Check availability"
 click, sandboxed and lazy.
 
+**This is a pattern, not a one-off.** `/turtle-haven-virtual-tour` behaves
+identically: 972 KB of HTML, and a search of the raw response for every common
+tour provider (Matterport, Kuula, Cupix, iGuide, YouTube, Vimeo) returns **zero
+hits**. The tour is injected client-side too. So the site's two strongest
+conversion assets — the booking engine and the virtual tour — are both invisible
+to crawlers and both cost a full page load before they appear.
+
+It also means neither embed URL can be recovered from the HTML. Both have to come
+out of the Wix editor; see `WIX-P0-CHECKLIST.md`.
+
 ## 6. Guest-ops pages are indexable — high
 
 **No page on the site emits a robots meta tag**, so all ~40 guest-operations

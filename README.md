@@ -139,6 +139,12 @@ appearing on 5+ of the fetched pages is treated as site chrome and dropped.
 
 - **Guesty listing IDs / widget URLs** → wire `BookingMount`'s `embedUrl`.
   Until then it renders an explicit placeholder, not a broken frame.
+- **Turtle Haven's virtual tour embed URL** → set `virtualTourUrl` in
+  `content/properties.ts`. Not recoverable from the live HTML: like the booking
+  widget it is injected client-side by a Wix HtmlComponent, so no provider URL
+  exists in the server response. `/turtle-haven-virtual-tour` 301s to the
+  property page, which shows an explicit "not yet connected" note so arrivals
+  from that search are not silently disappointed.
 - **Guest testimonials** — the six property pages carry `GUEST FEEDBACK` quotes
   with real guest first names and cities. Deliberately **not** migrated:
   republishing attributed personal content on a new domain needs sign-off first.

@@ -37,6 +37,21 @@ type PropertyBase = {
    */
   highlights: string[]
   intro: string
+  /**
+   * 360/virtual tour embed URL.
+   *
+   * Turtle Haven had a dedicated tour page on the live site
+   * (/turtle-haven-virtual-tour, now 301'd here). The embed could NOT be
+   * recovered: like the booking widget it is injected client-side by a Wix
+   * HtmlComponent, so no provider URL appears in the server HTML at all —
+   * checked for Matterport, Kuula, Cupix, iGuide, YouTube and Vimeo, zero hits.
+   *
+   * Devin needs to supply it from the Wix editor. Until then the property page
+   * renders an explicit "not yet connected" note rather than pretending the tour
+   * does not exist — visitors arriving from a "turtle haven virtual tour" search
+   * land here and should not be silently disappointed.
+   */
+  virtualTourUrl?: string
 }
 
 export type Property = PropertyBase & PropertyFacts
