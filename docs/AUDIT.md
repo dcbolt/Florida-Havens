@@ -146,6 +146,30 @@ has an obvious candidate cause that was never on the list.
 someone measures the actual video request — Content-Length on the media URL, or
 the video row in a PSI/DevTools network waterfall on `/`.
 
+### Three tools agreed, and that felt like triangulation. It wasn't.
+
+Worth naming for whoever audits this site next, because the failure is structural
+rather than careless. Three independent measurements were run by two different
+agents using different code, and all three missed the same object **for three
+different reasons**:
+
+| Tool | Why it could not see a `<video>` |
+|---|---|
+| `tools/crawl.py` | counts `<img>` tags |
+| image-payload pass | sums `static.wixstatic.com` **image** URLs |
+| embed-ratio hunt | matches third-party `<iframe src>` |
+
+None of them is wrong. Each is right about the thing it measures. But they share
+an unstated premise — *that page media is `<img>` or `<iframe>`* — so their
+agreement carried no independent information about anything outside that set.
+Three tools converging looked like corroboration and was actually one assumption
+counted three times.
+
+The homepage's own PSI number (6,856 KiB, finding P0.8) was the only measurement
+that *would* have caught it, because it measures bytes on the wire rather than
+elements in markup — and nobody reconciled it against the element-level counts.
+**When measurements agree, check whether they could have disagreed.**
+
 ### On alt text specifically: leave it alone
 
 A decorative background video's poster frame **should not** carry alt text —
