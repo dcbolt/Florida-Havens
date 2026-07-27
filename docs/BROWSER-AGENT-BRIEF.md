@@ -143,6 +143,16 @@ the theme's Heading 1 style. **They are editable.**
 >    path the seven nav labels were done on before the real control was found —
 >    which is why they needed the font/size/weight/colour restoration described
 >    below. **Do not repeat that.** Scroll to *SEO & accessibility* first.
+>
+>    **The two paths do not compose, so the nav labels cannot be cleaned up
+>    retroactively.** Tested read-only and reverted: switching Style away from
+>    Paragraph 2 **discards** the local size/colour/weight overrides rather than
+>    layering under them, resetting to Heading 1's raw defaults (82 px, black).
+>    There is no "original look, tag only" path back. The nav stays as it is —
+>    correct and published, held by manual overrides. The residual risk is that a
+>    future edit to the Paragraph 2 theme style could shift it; that is smaller
+>    than the risk of redoing seven live labels, so it is accepted and recorded
+>    rather than fixed.
 > 2. **The nav is not in the header.** The Layers panel's **Header** bucket is
 >    empty. The desktop nav is a **collapsed hamburger icon** (top-left) — a
 >    widget floating over the hero section — at *every* breakpoint, not just
@@ -381,12 +391,50 @@ current, not derived from the pre-fix desktop snapshot:
 
 Note `/guest-blog` came back as **2**, not the 3 an earlier `grep`-based count
 suggested — see the counting caveat above. **Open each page and report the count
-you actually see**; do not force it to match this table. The last two rows in
-particular are pre-fix figures.
+you actually see**; do not force it to match this table.
 
-Use `SEO & accessibility → Choose HTML tag` for every one of these. Empty
-zero-width-space `<h1>`s are stray text elements with no content — deleting them
-is cleaner than demoting them, but either removes the defect.
+Use `SEO & accessibility → Choose HTML tag` for every one of these.
+
+### Status 2026-07-26: 3 of 4 done, and the fourth is deliberately stopped
+
+`/guest-blog`, `/post/sea-turtle-nesting-season-in-florida` and
+`/stay-near-brevard-zoo-melbourne-beach-house` are each at **exactly one `<h1>`**,
+verified live under a Googlebot-smartphone fetch.
+
+> ### ⚠ Selection hazard in the rich-text tag control
+>
+> Selecting a single heading line with **Home + Shift + End** silently
+> over-extended into the *following* bullet list and paragraph — twice, on the
+> Brevard Zoo page — retagging them as `<h2>` with no visible cue in the editor.
+> Caught only on live verification, then reverted to `<p>` and re-published.
+>
+> **Re-verify live after every rich-text tag change.** The editor gives no
+> feedback that the selection ran past the line you meant. Prefer clicking into
+> the specific text element over keyboard range selection.
+
+**Empty zero-width-space `<h1>`s: leave them.** Two pages still carry stray
+empty headings (`/local-attractions-melbourne-beach` has 2; the Brevard Zoo page
+has 4, now as `<h2>`). Attempting to delete them made surrounding text vanish
+from the canvas — undone immediately, nothing published — so the risk is real and
+demonstrated.
+
+They are not worth that risk:
+
+- **They carry no text**, so they cannot compete for the page's subject. The
+  "one `<h1>`" rule is about competing subjects; an empty heading competes with
+  nothing. SEO cost ≈ zero.
+- The only real cost is accessibility — an empty entry in a screen reader's
+  heading list. Genuine, minor.
+- **Both pages are 301'd in the rebuild** (`/local-attractions-melbourne-beach` →
+  `/guides/local-attractions`, `/stay-near-brevard-zoo-melbourne-beach-house` →
+  `/guides/brevard-zoo`), and the replacements have a single clean `<h1>` and a
+  proper `<h2>`/`<h3>` outline. Perfecting markup on pages scheduled for redirect
+  is the wrong place to spend risk.
+
+Same reasoning covers the Brevard Zoo side-effect: its two real section headers
+ended up as plain `<p>` rather than `<h2>`. Slightly less semantic, no duplicate
+`<h1>`, and the replacement guide carries the correct outline. **Do not go back
+in for it.**
 
 ## 1c. Publish, then verify on the LIVE site
 
