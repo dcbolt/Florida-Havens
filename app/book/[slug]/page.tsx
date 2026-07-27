@@ -33,8 +33,9 @@ function resolve(slug: string) {
       description:
         'Check availability across all of our Space Coast beachfront homes and book direct for our best rate.',
       hero: PROPERTIES.find((p) => p.slug === 'the-dunes')!.hero,
-      heroAlt:
-        'The Florida Havens beachfront compound with private pools on the Atlantic',
+      // Same file, same description. The string here previously claimed "private
+      // pools", which are not visible in this aerial — AUDIT.md finding 16.
+      heroAlt: PROPERTIES.find((p) => p.slug === 'the-dunes')!.heroAlt,
       href: '/properties',
       isBrand: true as const,
     }

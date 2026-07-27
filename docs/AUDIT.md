@@ -43,7 +43,7 @@ truncated read must be filled rather than believed (see the corrections section)
 | 13 | Titles over 60 chars | **Low** | 7 pages; longest 93 |
 | 14 | **`/beach-street-check-in` serves The Dunes' check-in instructions** | **Critical — guest-facing** | the two check-in pages are identical except `<title>`: **37 of 38** text lines shared |
 | 15 | Homepage hero is a **background video**, not an image | **Unquantified — likely High** | Strip-level video, 35% opacity over black; never appeared in any crawl, weight unmeasured |
-| 16 | This repo's `heroAlt` strings describe images **nobody in the authoring loop has seen** | **Medium — accuracy risk** | 2 of 6 proved wrong when checked against the live photos |
+| 16 | Alt text authored **without seeing the images** — 2 of 6 flatly wrong, 1 unsupported | **Resolved 2026-07-26** | all 8 strings rewritten from the actual photographs |
 
 ---
 
@@ -71,22 +71,47 @@ sunroom, and tells Google the page is about something it is not. This audit
 criticises the live site for `alt=""` in finding 7 — it should hold its own output
 to a higher standard than "a string is present."
 
-**The live site is now correct.** This repo's `hero` images are *different files*
-from the gallery tiles that were checked, so its six strings remain **unverified**:
+### Resolved — all six files were opened and every string rewritten
 
-```
-turtle-haven   f054db_fead69fd7ac24407982b6f8375112ad1~mv2.png
-shell-haven    f054db_4758d285759b4f6ba21c000e666a7771~mv2.png
-beach-haven    f054db_14bd6f0adcb24b29b6840742b464d19b~mv2.png
-sea-haven      f054db_8e2ebd0f2b0049dd905a9a6ea3af7f81~mv2.png
-the-dunes      f054db_f32efb37368249f89e2a9a4911f60e5f~mv2.png
-beach-street   f054db_0b86e68f7a0743eaacbfd4b4c8c36887~mv2.png
-```
+The browser agent opened each `hero` file directly by asset ID rather than
+inferring from the live tiles, and reported what is in frame. Four are the same
+file as the live gallery tile; `the-dunes` and `beach-street` are different files
+and were opened separately.
 
-**Anyone who can see images should open those six and correct `heroAlt` to match.**
-Until then, treat the strings as drafts. The same caution applies to every
-descriptive string in this repo that was written without rendering the thing it
-describes.
+| Property | What the photograph actually shows |
+|---|---|
+| Turtle Haven | Interior sunroom — wood plank ceiling and walls, wicker furniture, wraparound windows onto dune vegetation and ocean. **No pool, no dusk.** |
+| Shell Haven | Backyard in-ground pool, raised spa with waterfall spillover, patio furniture, wood privacy fence. **No ocean in frame.** |
+| Beach Haven | Covered patio/pergola looking out to pool and spa, white privacy fence, hedge greenery. **No palm trees** — the palms are the logo overlay. |
+| Sea Haven | Kitchen — granite countertops, stainless range and microwave, blue accent wall, dining area behind. |
+| The Havens at The Dunes | Aerial: two beachfront properties with pin markers, beach and ocean along the frame. |
+| The Havens at Beach Street | Aerial: two adjacent blue-roofed properties, **two pools clearly visible**. |
+
+Tally on the original drafts: **three accurate, two flatly wrong** (Turtle Haven,
+Sea Haven), **one unsupported** — Shell Haven's "ocean view", which is marketing
+language rather than a description of the frame and has been dropped.
+
+**Two further strings were found describing the same Dunes aerial** and were also
+inventions: `app/page.tsx` claimed "at sunrise" and the brand booking page claimed
+"private pools", neither of which is in that photograph. Both now read from
+`the-dunes`' `heroAlt`, so each image has exactly one description and the
+duplicates cannot drift apart again.
+
+### The rule this produced
+
+Written into the `heroAlt` type declaration, because it is the reusable part:
+
+- **Describe what is in the frame**, not what the property offers. "Ocean view" is
+  a listing feature; it does not belong in alt text for a photo with no ocean in it.
+- **Add the town where the frame carries location** — exteriors, aerials, ocean
+  views. **Omit it for a pure interior**: Sea Haven's kitchen is a kitchen
+  anywhere, and appending "in Indialantic, Florida" would be keyword padding aimed
+  at a crawler rather than a description aimed at a person.
+
+> Nothing in a sandbox flags this class of error. The build passed, CI passed, the
+> strings were well-formed, place-qualified and confident — and two of them
+> described the wrong room. The only thing that caught it was someone looking at
+> the picture.
 
 ---
 

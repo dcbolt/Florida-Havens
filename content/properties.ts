@@ -34,14 +34,15 @@ type PropertyBase = {
   description: string
   hero: string
   /**
-   * UNVERIFIED — see AUDIT.md finding 16. These were written in a sandbox with no
-   * image rendering, so they are inferred from marketing copy, not descriptions
-   * of the actual photographs. Checked against the live gallery photos on
-   * 2026-07-26, two of six were plain wrong: Turtle Haven's showed an interior
-   * sunroom, not a villa at dusk; Sea Haven's showed a kitchen, not an ocean-view
-   * terrace. Wrong alt text is worse than none — it misinforms a screen-reader
-   * user and misdescribes the page to Google. Anyone who can see images should
-   * open the six `hero` URLs and correct these to match.
+   * VERIFIED 2026-07-26 against the actual image files, by an agent that opened
+   * each one by asset ID. See AUDIT.md finding 16 for what the first, blind-written
+   * drafts got wrong — two of six described a different photograph entirely.
+   *
+   * Rule for editing these: describe what is *in the frame*. Do not add the town
+   * to a pure interior shot (Sea Haven's kitchen is a kitchen anywhere); do add it
+   * where the frame carries location — exteriors, aerials, ocean views. Do not
+   * carry marketing language into alt text: "ocean view" was dropped from Shell
+   * Haven because no ocean is visible in that photo.
    */
   heroAlt: string
   kind: 'home' | 'campus'
@@ -85,7 +86,7 @@ const BASE_PROPERTIES: PropertyBase[] = [
       'A secluded luxury beachfront rental on sea turtle nesting grounds. Private pool and spa, ocean views, family amenities on the Space Coast.',
     hero: `${W}/f054db_fead69fd7ac24407982b6f8375112ad1~mv2.png/v1/fill/w_1920,h_1080,al_c/f054db_fead69fd7ac24407982b6f8375112ad1~mv2.png`,
     heroAlt:
-      'Turtle Haven beachfront villa at dusk with private pool overlooking the Atlantic in Melbourne Beach, Florida',
+      'Turtle Haven’s sunroom with wicker seating, a wood plank ceiling and wraparound windows looking over dune vegetation to the ocean in Melbourne Beach, Florida',
     highlights: [
       'Private waterfall pool and spa',
       'Direct beach access on a protected sea turtle reserve',
@@ -105,7 +106,7 @@ const BASE_PROPERTIES: PropertyBase[] = [
       'Luxury beachfront home on Florida’s Space Coast with king bedrooms, a private pool and spa, and exclusive beach access.',
     hero: `${W}/f054db_4758d285759b4f6ba21c000e666a7771~mv2.png/v1/fill/w_1920,h_1080,al_c/f054db_4758d285759b4f6ba21c000e666a7771~mv2.png`,
     heroAlt:
-      'Shell Haven luxury beachfront vacation home with private pool and ocean view in Melbourne Beach, Florida',
+      'Shell Haven’s in-ground pool with a raised spa and waterfall spillover, patio seating and a wood privacy fence in Melbourne Beach, Florida',
     highlights: [
       'Private pool and spa',
       'Exclusive private beach access',
@@ -125,7 +126,7 @@ const BASE_PROPERTIES: PropertyBase[] = [
       'Spacious, brand-new coastal retreat in Indialantic, FL. Private pool and oversized spa, minutes from beaches, dining and downtown Melbourne.',
     hero: `${W}/f054db_14bd6f0adcb24b29b6840742b464d19b~mv2.png/v1/fill/w_1920,h_1080,al_c/f054db_14bd6f0adcb24b29b6840742b464d19b~mv2.png`,
     heroAlt:
-      'Beach Haven vacation home exterior with pool deck and palm trees in Indialantic, Florida',
+      'Beach Haven’s covered patio looking out to the pool and spa, with a white privacy fence and hedge screening in Indialantic, Florida',
     highlights: [
       'Private luxury pool and oversized spa',
       'King bed in every bedroom',
@@ -145,7 +146,7 @@ const BASE_PROPERTIES: PropertyBase[] = [
       'Spacious beachfront escape on Florida’s Space Coast, steps from a private beach entrance. Book direct for the best rate.',
     hero: `${W}/f054db_8e2ebd0f2b0049dd905a9a6ea3af7f81~mv2.png/v1/fill/w_1920,h_1080,al_c/f054db_8e2ebd0f2b0049dd905a9a6ea3af7f81~mv2.png`,
     heroAlt:
-      'Sea Haven beachfront rental with ocean view terrace in Indialantic, Florida',
+      'Sea Haven’s kitchen with granite countertops, a stainless range and a blue accent wall, open to the dining area',
     highlights: [
       'Steps from a private beach entrance',
       'Private pool and spa',
@@ -164,7 +165,7 @@ const BASE_PROPERTIES: PropertyBase[] = [
       'A private oceanfront compound in Melbourne Beach for reunions and large groups — two pools, two kitchens, protected reserve next door.',
     hero: `${W}/f054db_f32efb37368249f89e2a9a4911f60e5f~mv2.png/v1/fill/w_1920,h_1080,al_c/f054db_f32efb37368249f89e2a9a4911f60e5f~mv2.png`,
     heroAlt:
-      'Aerial view of The Havens at The Dunes beachfront compound with two private pools on the Atlantic',
+      'Aerial view of the two beachfront homes at The Havens at The Dunes, marked along the shoreline in Melbourne Beach, Florida',
     highlights: [
       'Turtle Haven and Shell Haven booked together',
       'Two private waterfall pools and two luxury spas',
@@ -183,7 +184,7 @@ const BASE_PROPERTIES: PropertyBase[] = [
       'Beach Haven and Sea Haven booked together in Indialantic — twice the space for reunions, wedding parties and tournament groups.',
     hero: `${W}/f054db_0b86e68f7a0743eaacbfd4b4c8c36887~mv2.png/v1/fill/w_1920,h_1080,al_c/f054db_0b86e68f7a0743eaacbfd4b4c8c36887~mv2.png`,
     heroAlt:
-      'The Havens at Beach Street beachfront homes with shared pool deck in Indialantic, Florida',
+      'Aerial view of the two blue-roofed homes at The Havens at Beach Street, each with its own pool, in Indialantic, Florida',
     highlights: [
       'Beach Haven and Sea Haven booked together',
       'Two private pools, spas and grills',

@@ -23,9 +23,12 @@ export default function HomePage() {
     <>
       <section className="relative isolate">
         <div className="relative h-[68vh] min-h-[420px] w-full">
+          {/* alt comes from the-dunes' heroAlt because this is the same file.
+              A separate hand-written string here read "at sunrise", which is not
+              in the photograph — see AUDIT.md finding 16. */}
           <Image
             src={hero.hero}
-            alt="The Florida Havens beachfront homes at sunrise on Florida's Space Coast"
+            alt={hero.heroAlt}
             fill
             priority
             sizes="100vw"
