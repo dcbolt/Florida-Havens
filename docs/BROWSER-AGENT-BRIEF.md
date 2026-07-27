@@ -1,5 +1,25 @@
 # Brief for the in-browser agent (Wix Studio)
 
+> ## STATUS 2026-07-27: executed. Tasks 0, 1, 2, 3 and 5 are DONE and verified.
+>
+> | Task | State |
+> |---|---|
+> | 0 — restore point + baselines | ✅ [`BASELINE-2026-07-26.md`](BASELINE-2026-07-26.md) |
+> | 1 — nav `<h1>` + one real `<h1>` per page | ✅ verified as Googlebot-smartphone |
+> | 2 — two `tel:` links | ✅ `5087260695` absent from served HTML, both UAs |
+> | 3 — noindex 39 guest-ops pages | ✅ 39/39; corroborated by pages-sitemap **76 → 37** |
+> | 4 — typo slug | ⏭ **skipped** — `noindex` removed the ranking cost; now cosmetic |
+> | 5 — alt text | ✅ homepage empty-alt **65/68 → 5/68**; the 5 are decorative nav thumbs |
+>
+> Open, and **held for Devin rather than an agent**: P0.6 (deleting gallery
+> slides is permanent content removal), P0.7 (booking-path change, blocked on
+> Guesty URLs), plus findings 14, 15 and the outstanding inputs — see
+> [`WIX-P0-CHECKLIST.md`](WIX-P0-CHECKLIST.md).
+>
+> **The corrections below are the durable value of this document.** Six of its
+> original instructions were wrong about Studio, and each is marked inline with
+> what turned out to be true. Read those before trusting any click path here.
+
 **Paste everything below the line into the Claude sidebar in the Wix dashboard.**
 
 This is written for an agent that can see and click the Wix Studio UI, which this
