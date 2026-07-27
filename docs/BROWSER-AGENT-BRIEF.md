@@ -637,9 +637,39 @@ some pages don't appear in the SEO table, name them.
 
 ---
 
-# TASK 4 — Fix the typo slug
+# TASK 3 — STATUS: DONE 2026-07-26, all 39 verified
 
-`/beach-strret-wifi-guide` — "strret" — is live and indexed.
+Independently swept server-side as Googlebot-smartphone: **39 of 39 carry
+`<meta name="robots" content="noindex">`, zero misses.** Controls
+(`/dunes-meet-your-hosts`, `/beach-street-meet-your-hosts`, `/turtle-haven`,
+`/faqs`) all return no robots meta, so nothing was over-toggled.
+
+Two things found in the page tree worth recording: the Dunes utility pages appear
+**twice** in Studio's tree — once flat, once inside a "The Dunes Guidebook"
+folder — but they are the same physical pages, confirmed by slug, so there was no
+double-counting and no second toggle needed. `robots.txt` was correctly left
+alone.
+
+---
+
+# TASK 4 — Fix the typo slug · **value dropped once Task 3 landed**
+
+`/beach-strret-wifi-guide` — "strret" — is live.
+
+> **Re-ranked 2026-07-26.** This mattered because an indexed URL carried a visible
+> misspelling. It is now `noindex`, so that cost is already gone. What remains is
+> cosmetic: guests who look at the URL bar. The page is also 301'd to the guest
+> portal in the rebuild, so it is destined for retirement either way.
+>
+> **Recommendation: do Task 5 first.** Alt text touches the homepage hero and six
+> property heroes — indexed, revenue-bearing pages. This touches a noindexed
+> guest-ops page scheduled for removal. If you want the URL clean anyway it is a
+> five-minute job; just do it knowing the ranking argument for it has expired.
+>
+> **If you do rename it, say so** — `content/url-matrix.ts` in the rebuild keys
+> the redirect off `/beach-strret-wifi-guide`, and the live sitemap will start
+> serving a slug that is not in the 77-URL matrix. That needs a matrix update on
+> the repo side, and Grok's sitemap-drift watch will flag it.
 
 1. Editor **Pages → that page → SEO → URL slug** → correct to
    `beach-street-wifi-guide`.

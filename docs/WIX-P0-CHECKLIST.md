@@ -12,15 +12,20 @@ over to the new site.
 
 | Item | Status |
 |---|---|
-| P0.1 nav H1 | **Manual** — no API for page element markup |
+| P0.1 nav H1 | **✅ DONE 2026-07-26** — nav labels are `<p>`; every page has one real `<h1>` or none competing. Verified as Googlebot-smartphone |
 | P0.2 phone | **✅ DONE 2026-07-26**, verified live |
-| P0.3 noindex guest-ops | **Manual** — no per-page SEO API |
-| P0.4 301 typo slug | **Manual** — no URL-redirect API |
-| P0.5 alt text | **Manual** — editor content |
-| P0.6 gallery dupes | **Manual** — editor content |
-| P0.7 book page order | **Manual** — editor content |
-| P0.8 PSI baseline | **Devin/Grok** — blocked in this sandbox |
-| P0.9 two `tel:` links → 508 | **Manual** — hardcoded in page content, verified on 2 pages |
+| P0.3 noindex guest-ops | **✅ DONE 2026-07-26** — **39/39 verified** in served HTML, controls clean |
+| P0.4 301 typo slug | **Open, but re-ranked down** — `noindex` removed the ranking cost; now cosmetic |
+| P0.5 alt text | **Open — now the highest-value remaining item** |
+| P0.6 gallery dupes | **Open** — re-ranked *up*: images are ~98% of live page weight |
+| P0.7 book page order | **Open** |
+| P0.8 PSI baseline | **✅ DONE 2026-07-26** — see [`BASELINE-2026-07-26.md`](BASELINE-2026-07-26.md) |
+| P0.9 two `tel:` links → 508 | **✅ DONE 2026-07-26** — both repointed, `5087260695` absent from served HTML on both pages |
+| **Finding 14** — Beach Street serves The Dunes' check-in copy | **Open, Devin/Craig** — guest-facing, needs authorship. Highest priority of anything remaining |
+
+**Everything an agent can do in the editor is done except P0.4–P0.7.** The
+critical path now runs through content decisions and Guesty/tour inputs, not
+markup.
 
 Ordered by return on effort. **P0.1 is worth more than the rest combined.**
 
