@@ -43,6 +43,50 @@ truncated read must be filled rather than believed (see the corrections section)
 | 13 | Titles over 60 chars | **Low** | 7 pages; longest 93 |
 | 14 | **`/beach-street-check-in` serves The Dunes' check-in instructions** | **Critical — guest-facing** | the two check-in pages are identical except `<title>`: **37 of 38** text lines shared |
 | 15 | Homepage hero is a **background video**, not an image | **Unquantified — likely High** | Strip-level video, 35% opacity over black; never appeared in any crawl, weight unmeasured |
+| 16 | This repo's `heroAlt` strings describe images **nobody in the authoring loop has seen** | **Medium — accuracy risk** | 2 of 6 proved wrong when checked against the live photos |
+
+---
+
+## 16. Alt text written blind — 2 of 6 were wrong
+
+The six `heroAlt` strings in `content/properties.ts` were authored in a sandbox
+with no image rendering. They are plausible-sounding descriptions inferred from
+each property's marketing copy, **not** descriptions of the actual photographs.
+
+When the browser agent checked them against the live gallery photos on 2026-07-26,
+**two of six described a different picture entirely:**
+
+| Property | This repo claimed | The photo actually shows |
+|---|---|---|
+| Turtle Haven | "beachfront villa at dusk with private pool overlooking the Atlantic" | an **interior sunroom** — wicker furniture, floor-to-ceiling windows, daytime |
+| Sea Haven | "beachfront rental with ocean view terrace" | a **kitchen** with granite countertops |
+
+Both were corrected on the live site to match reality. The other four matched.
+
+### Why this is a finding and not a footnote
+
+Wrong alt text is worse than empty alt text. Empty tells a screen reader "skip
+this"; wrong tells a blind user there is a pool outside when they are looking at a
+sunroom, and tells Google the page is about something it is not. This audit
+criticises the live site for `alt=""` in finding 7 — it should hold its own output
+to a higher standard than "a string is present."
+
+**The live site is now correct.** This repo's `hero` images are *different files*
+from the gallery tiles that were checked, so its six strings remain **unverified**:
+
+```
+turtle-haven   f054db_fead69fd7ac24407982b6f8375112ad1~mv2.png
+shell-haven    f054db_4758d285759b4f6ba21c000e666a7771~mv2.png
+beach-haven    f054db_14bd6f0adcb24b29b6840742b464d19b~mv2.png
+sea-haven      f054db_8e2ebd0f2b0049dd905a9a6ea3af7f81~mv2.png
+the-dunes      f054db_f32efb37368249f89e2a9a4911f60e5f~mv2.png
+beach-street   f054db_0b86e68f7a0743eaacbfd4b4c8c36887~mv2.png
+```
+
+**Anyone who can see images should open those six and correct `heroAlt` to match.**
+Until then, treat the strings as drafts. The same caution applies to every
+descriptive string in this repo that was written without rendering the thing it
+describes.
 
 ---
 

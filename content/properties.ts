@@ -22,11 +22,27 @@ import { PROPERTY_FACTS, type PropertyFacts } from './property-facts'
 type PropertyBase = {
   slug: string
   name: string
-  /** <=60 chars — AUDIT FIX: 7 live titles exceeded 60 and were truncated. */
+  /**
+   * <=60 chars, and must name the property's town — CI asserts both against
+   * built output. The Search Console baseline showed the entire named-impression
+   * tail is generic "sea haven" / "beach haven" collisions with unrelated
+   * businesses at average position 33.7, so a house name alone cannot rank.
+   * Feeds the document <title> via `absolute`, bypassing the layout template.
+   */
   title: string
   /** <=155 chars — AUDIT FIX: 51 of 74 live descriptions exceeded 160. */
   description: string
   hero: string
+  /**
+   * UNVERIFIED — see AUDIT.md finding 16. These were written in a sandbox with no
+   * image rendering, so they are inferred from marketing copy, not descriptions
+   * of the actual photographs. Checked against the live gallery photos on
+   * 2026-07-26, two of six were plain wrong: Turtle Haven's showed an interior
+   * sunroom, not a villa at dusk; Sea Haven's showed a kitchen, not an ocean-view
+   * terrace. Wrong alt text is worse than none — it misinforms a screen-reader
+   * user and misdescribes the page to Google. Anyone who can see images should
+   * open the six `hero` URLs and correct these to match.
+   */
   heroAlt: string
   kind: 'home' | 'campus'
   /** Campus this home belongs to, for internal linking. */
