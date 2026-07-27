@@ -89,7 +89,7 @@ const BASE_PROPERTIES: PropertyBase[] = [
       'Luxury beachfront home on Florida’s Space Coast with king bedrooms, a private pool and spa, and exclusive beach access.',
     hero: `${W}/f054db_4758d285759b4f6ba21c000e666a7771~mv2.png/v1/fill/w_1920,h_1080,al_c/f054db_4758d285759b4f6ba21c000e666a7771~mv2.png`,
     heroAlt:
-      'Shell Haven luxury beachfront vacation home with private pool and ocean view on the Florida Space Coast',
+      'Shell Haven luxury beachfront vacation home with private pool and ocean view in Melbourne Beach, Florida',
     highlights: [
       'Private pool and spa',
       'Exclusive private beach access',
@@ -129,7 +129,7 @@ const BASE_PROPERTIES: PropertyBase[] = [
       'Spacious beachfront escape on Florida’s Space Coast, steps from a private beach entrance. Book direct for the best rate.',
     hero: `${W}/f054db_8e2ebd0f2b0049dd905a9a6ea3af7f81~mv2.png/v1/fill/w_1920,h_1080,al_c/f054db_8e2ebd0f2b0049dd905a9a6ea3af7f81~mv2.png`,
     heroAlt:
-      'Sea Haven beachfront rental with ocean view terrace on the Florida Space Coast',
+      'Sea Haven beachfront rental with ocean view terrace in Indialantic, Florida',
     highlights: [
       'Steps from a private beach entrance',
       'Private pool and spa',

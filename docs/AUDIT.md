@@ -42,6 +42,52 @@ truncated read must be filled rather than believed (see the corrections section)
 | 12 | No `preconnect` anywhere | **Low** | 0 across all 74 pages |
 | 13 | Titles over 60 chars | **Low** | 7 pages; longest 93 |
 | 14 | **`/beach-street-check-in` serves The Dunes' check-in instructions** | **Critical — guest-facing** | the two check-in pages are identical except `<title>`: **37 of 38** text lines shared |
+| 15 | Homepage hero is a **background video**, not an image | **Unquantified — likely High** | Strip-level video, 35% opacity over black; never appeared in any crawl, weight unmeasured |
+
+---
+
+## 15. The homepage hero is a video, and no measurement in this audit saw it
+
+Found 2026-07-26 by the browser agent while doing alt text. It is not in any
+earlier finding, and it should have been.
+
+The homepage top section is a **Strip-level background video** at 35% opacity over
+black — which is why it reads as near-solid black with the logo on top. The only
+real `<img>` in that section is the logo, which already has alt text. The
+empty-`alt` image the baseline flagged there is the **video's auto-generated
+poster frame**.
+
+### Why this is a gap, not a footnote
+
+Every measurement in this document looked for `<img>` and `<iframe>`:
+
+- The crawler counted `<img>` tags → **a `<video>` is invisible to it.**
+- The image-payload measurement summed `static.wixstatic.com` **image** URLs →
+  **video bytes were never counted.**
+- Grok's embed-ratio hunt looked for third-party `<iframe src>` and concluded
+  there was no third client-injected conversion surface. That conclusion stands
+  for *iframes*, but a Strip background video is a **fourth media surface**
+  neither of us had enumerated.
+
+So the homepage's **6,856 KiB** measured transfer (P0.8 baseline) includes an
+unknown and probably large video payload, and the **26.2 s LCP** on that page now
+has an obvious candidate cause that was never on the list.
+
+**This is the honest state: unquantified.** Do not assign it a byte figure until
+someone measures the actual video request — Content-Length on the media URL, or
+the video row in a PSI/DevTools network waterfall on `/`.
+
+### On alt text specifically: leave it alone
+
+A decorative background video's poster frame **should not** carry alt text —
+empty is correct, and a screen reader should skip it. Wix exposes no
+accessibility field for it in any case. This is not a defect and forcing it would
+be wrong.
+
+Swapping the video for a static image is a **performance** question, not an
+accessibility one, and it changes how the homepage looks and behaves. That needs
+Devin's explicit sign-off and should be decided on measured bytes, not on the alt
+attribute that led us here.
 
 ---
 
