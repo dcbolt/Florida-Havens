@@ -41,6 +41,86 @@ truncated read must be filled rather than believed (see the corrections section)
 | 11 | Typo in a live URL | **Medium** | `/beach-strret-wifi-guide` |
 | 12 | No `preconnect` anywhere | **Low** | 0 across all 74 pages |
 | 13 | Titles over 60 chars | **Low** | 7 pages; longest 93 |
+| 14 | **`/beach-street-check-in` serves The Dunes' check-in instructions** | **Critical — guest-facing** | the two check-in pages are identical except `<title>`: **37 of 38** text lines shared |
+
+---
+
+## 14. A guest at Beach Street is reading The Dunes' check-in page
+
+Found 2026-07-26 by the browser agent, working on P0.9, and confirmed against the
+content snapshot. **This is not an SEO defect and it is the most serious thing in
+this audit.**
+
+`/dunes-check-in` and `/beach-street-check-in` are byte-identical apart from the
+`<title>`. Both carry the heading *"Check-In to The Dunes (Turtle Haven and/or
+Shell Haven)"* and both are 186 words:
+
+```
+lines: dunes=38  beach-street=38  shared=37
+only on /dunes-check-in         : "The Dunes Check-In | The Florida Havens"
+only on /beach-street-check-in  : "Beach Street Check-In | The Florida Havens"
+```
+
+So the *entire body* — arrival steps, timings, whatever access details it
+contains — is The Dunes' content published under the Beach Street title. The two
+campuses are different properties about eight miles apart, in different towns
+(Melbourne Beach 32951 vs Indialantic 32903), with different houses.
+
+**A guest arriving at Beach Street who opens their check-in link is reading
+instructions for a house they are not staying in.**
+
+### What this does and does not need
+
+- **`noindex` does not fix it.** P0.3 removes the page from search; guests reach
+  it from a link in their booking correspondence, not from Google. Doing P0.3
+  first would make the defect *harder* to notice while leaving it fully live.
+- **The rebuild does not fix it either.** `/beach-street-check-in` 301s to the
+  guest portal, which relocates the page without correcting what it says.
+- **It needs the real Beach Street check-in content**, which only Craig and Devin
+  have. This is content authorship, not a markup fix, and by the Split it belongs
+  to **Media Haven** — but the wrong content is live on the marketing domain
+  today, so it is recorded here.
+
+**Recommended:** treat as the top-priority item outside this repo. Until it is
+corrected, the Beach Street check-in link should not be sent to guests.
+
+### It is an outlier, not the house style — which is what makes it a real miss
+
+`tools/dupe-pages.py` now scans every page pair, dropping site chrome first
+(any line on 5+ pages). Across the snapshot, **11 Beach-Street/Dunes sibling
+pairs share ≥80% of their body copy** — unsurprising for one operator writing in
+one voice.
+
+But **9 of those 11 carry genuine per-campus differences**, which is the point:
+
+| Pair | Differentiated by |
+|---|---|
+| emergency guide | **street addresses** — `135 & 145 Beach St, Melbourne FL 32903` vs `4225 & 4227 S Hwy A1A Melbourne Beach FL 32951` |
+| pool & spa | quiet hours **9 PM** vs **10 PM**; Dunes adds spa-cycle heating notes and a service-fee warning |
+| house guide | Dunes carries the full documented-allergy / Chapter 509 pet policy; Beach Street carries a one-line version |
+| sea turtle guide | different opening paragraphs — Indialantic nesting density vs national reserve |
+| beach rules, BBQ, A/C, amenities | per-campus equipment and item lists |
+
+So the operator does differentiate these pages, deliberately and in detail.
+
+**Exactly two pairs differ in nothing but the `<title>`:**
+
+| Pair | Body difference | Harmful? |
+|---|---|---|
+| `/dunes-laundry-guide` ↔ `/beach-street-laundry-guide` | none | Probably not — washer/dryer instructions may legitimately be identical |
+| `/dunes-check-in` ↔ `/beach-street-check-in` | none | **Yes** — the shared body names The Dunes' houses explicitly |
+
+That is the distinction that matters. Identical laundry copy is plausible.
+Identical check-in copy is not, because the text says *"Check-In to The Dunes
+(Turtle Haven and/or Shell Haven)"* — it names the wrong houses, on the wrong
+campus, in the wrong town.
+
+> Worth noting how it surfaced: nobody was looking for it. It was visible only
+> because the agent read the page it was editing instead of going straight to the
+> element it had been sent for. The sitewide scan that generalises the check now
+> exists (`tools/dupe-pages.py`), and its real value is the comparison above —
+> a raw similarity number would have flagged all 11 pairs and buried the one
+> that counts.
 
 ---
 

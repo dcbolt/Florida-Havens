@@ -522,6 +522,33 @@ screen, which is exactly why proof-reading never found it.
 Both pages are also on Task 3's `noindex` list. Fix the link anyway — `noindex`
 removes a page from search, not from guests who already hold the link.
 
+### Status 2026-07-26: DONE and verified in served HTML
+
+```
+/dunes-check-in         <a href="tel:13212090495">contact the host   ✓
+                        <a href="tel:3212090495">   (footer)         ✓
+/beach-street-check-in  <a href="tel:13212090495">contact the host   ✓
+                        <a href="tel:3212090495">   (footer)         ✓
+5087260695 — 0 occurrences on either page                            ✓
+```
+
+> ### Check `tel:` in served HTML, not in the DOM
+>
+> A `document.querySelectorAll('a[href^="tel:"]')` check on these pages returns
+> **empty**, which led to the conclusion that the site "doesn't use `tel:`
+> anchors at all." It does — **two per page**, visible in the server response
+> above, and the footer number is a real link rather than the plain text it
+> appears to be post-hydration. Wix evidently rewrites these anchors during
+> hydration.
+>
+> The server response is also the *right* authority here, not merely a
+> tiebreaker: the exposure being fixed is a personal number readable by
+> scrapers, aggregators and crawlers, all of which read served HTML. Verify this
+> class of fix with `curl`, not DevTools.
+>
+> The editor's link dialog happened to agree, but it is not evidence — see the
+> stale-panel trap.
+
 ---
 
 # TASK 3 — `noindex` 39 guest-operations pages
