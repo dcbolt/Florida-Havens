@@ -89,9 +89,38 @@ content change — the nav can look identical.
 > [`BROWSER-AGENT-BRIEF.md`](BROWSER-AGENT-BRIEF.md) and is **not yet done**. Do
 > not describe P0.1 as complete until it is.
 
-**Status on the live site: Desktop done, 2026-07-26.** All seven Desktop labels
-are now `<p>` at 35 px, verified in the published DOM; homepage `<h1>` count went
-7 → 0, the expected midpoint before per-page headings are promoted (Task 1b).
+**Status on the live site: substantially fixed, 2026-07-26.** All seven nav
+labels are now `<p>` at 35 px, and the seven pages that had no heading of their
+own were given one. Verified server-side as **Googlebot-smartphone**, which is
+the crawler that matters:
+
+| Page | `<h1>` | Text |
+|---|---:|---|
+| `/` | 1 | Welcome to The Florida Havens |
+| `/turtle-haven` | 1 | WELCOME TO TURTLE HAVEN |
+| `/shell-haven` | 1 | WELCOME TO SHELL HAVEN |
+| `/beach-haven` | 1 | WELCOME TO BEACH HAVEN |
+| `/sea-haven` | 1 | WELCOME TO SEA HAVEN |
+| `/the-dunes` | 1 | WELCOME TO "THE HAVENS AT THE DUNES" |
+| `/beach-street` | 1 | WELCOME TO "THE HAVENS AT BEACH STREET" |
+| `/about`, `/faqs`, `/properties` | 1 | already had one; nav removal fixed them |
+
+The **46 pages that carried 8** are corrected by the nav change alone — roughly
+60% of the site — and the four pages with extra headings remain (§1c of the
+brief). Mobile needed no separate fix: **Task 1d closed negative**, confirmed
+both from a mobile viewport and by server fetch under a Googlebot-smartphone UA.
+
+> **UA branching is real on this site**, which is worth knowing for any future
+> measurement: the same URL returns different markup per user-agent — homepage
+> 1,720 KB desktop, 1,470 KB mobile, 1,312 KB Googlebot-smartphone. Byte figures
+> elsewhere in this audit are the **desktop** variant.
+
+> **Counting caveat.** `grep -o '<h1' | wc -l` counts raw substrings, and Wix
+> inlines page content as JSON, so `<h1` can occur inside a `<script>` blob. On
+> `/guest-blog` that method reported 3 where parsed elements were 2. The census
+> tables in this document come from **paired-element parsing**
+> (`<h1…>…</h1>`) in `tools/backup-live-site.py`, not from `grep`, so they are
+> unaffected — but treat any `grep`-derived count as an upper bound.
 
 Fixed in this repo: `components/SiteHeader.tsx` uses a plain `<nav>` + `<ul>`,
 leaving exactly one `<h1>` owned by each page. Verified in the built output:

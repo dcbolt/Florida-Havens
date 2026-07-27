@@ -126,14 +126,23 @@ the theme's Heading 1 style. **They are editable.**
 
 ## 1a. Change the nav labels' tag
 
-> **SETTLED 2026-07-26, in Studio.** Two things I had inferred were wrong:
+> **SETTLED 2026-07-26, in Studio — but item 1 was corrected later the same day.**
 >
-> 1. **There is no separate tag selector.** The **Style** dropdown *is* the tag
->    control — one dropdown sets both semantics and appearance, and each entry
->    carries its own default size (Heading 1 = 82 px, Paragraph 1 = 18 px,
->    Paragraph 2 = 16 px, Paragraph 3 = 14 px). Switching to any Paragraph level
->    drops the label to that preset's size, so restoration is mandatory. The
->    "tag-only, nothing to restore" path does not exist.
+> 1. ~~There is no separate tag selector.~~ **WRONG. It exists:**
+>    **Text Settings → SEO & accessibility → "Choose HTML tag."** It is fully
+>    independent of the visual Style preset, and it is *further down the panel
+>    than the Style dropdown* — which is why the first pass missed it.
+>
+>    **Use this control for all tag work.** Changing the tag through it leaves
+>    font, size, weight and colour completely untouched — verified on the seven
+>    Task 1b headlines, computed values identical before and after (homepage:
+>    50 px, leaf-span colour `rgb(243,243,243)`, unchanged). No style-restore
+>    dance, no colour trap, no per-breakpoint repetition.
+>
+>    The Style dropdown *also* changes the tag as a side effect, and that is the
+>    path the seven nav labels were done on before the real control was found —
+>    which is why they needed the font/size/weight/colour restoration described
+>    below. **Do not repeat that.** Scroll to *SEO & accessibility* first.
 > 2. **The nav is not in the header.** The Layers panel's **Header** bucket is
 >    empty. The desktop nav is a **collapsed hamburger icon** (top-left) — a
 >    widget floating over the hero section — at *every* breakpoint, not just
@@ -214,7 +223,12 @@ ATTRACTIONS · GUEST RESOURCES · CONTACT**
 > PROPERTIES". Do not, however, *guess* at a colour — leaving it as-inherited is
 > correct; picking a new one is not.
 
-### Two traps found while doing this, both confirmed 2026-07-26
+### Two traps found on the Style-dropdown path — avoidable via "Choose HTML tag"
+
+Both of these are consequences of changing the tag *through the Style preset*.
+The `SEO & accessibility → Choose HTML tag` control avoids both entirely. They
+are kept here because the seven nav labels were done the hard way and their
+current state depends on it.
 
 **1. The editor panel goes stale and lies to you.** After a style-preset change,
 the Font field can keep showing a wrong value (observed: `Futura`) and refuse to
@@ -238,12 +252,12 @@ inherited rather than chosen), then set white explicitly on the ones you changed
 to match. That is matching an observed sibling value, which is allowed. Inventing
 a colour is still not.
 
-> **Expect the same trap in reverse in Task 1b.** Promoting a heading *to*
-> Heading 1 pulls Heading 1's defaults *in* — on this site that is **white text
-> at an 82 px default**. A page headline promoted to `<h1>` may jump to 82 px
-> and/or turn white and vanish against a light background. Note each headline's
-> font size and colour **before** you change it, and restore both after. Same
-> discipline as 1a, opposite direction.
+> **This reverses in Task 1b — and is why the tag control matters.** Promoting a
+> heading *to* Heading 1 via the Style preset would pull Heading 1's defaults in
+> (white, 82 px), so a promoted headline could jump size or vanish against a
+> light background. Using `SEO & accessibility → Choose HTML tag` instead, none
+> of that happens: Task 1b's seven headlines went `h2 → h1` with computed styles
+> byte-identical. Record size and colour before changing anyway, as a check.
 
 ### Breakpoints: Mobile is a different widget, not a rescale
 
@@ -352,15 +366,27 @@ fixed: `/about` ("About The Florida Havens"), `/contact` ("Contact Us"), `/faqs`
 ("Frequently Asked Questions"), `/properties` ("TWO SETTINGS. FOUR HOMES. ONE
 UNFORGETTABLE EXPERIENCE.").
 
-**Four pages have a *second* extra `<h1>` to demote to `<h2>`** (pick the one
-that is not the page's real subject):
+## 1c. Demote the extra `<h1>`s on four pages
 
-| Page | Two `<h1>`s | Keep as `<h1>` |
-|---|---|---|
-| `/guest-blog` | `"Memories From The Havens"` · `Enjoy stories from other guests…` | the first; demote the second to `<h2>` |
-| `/post/sea-turtle-nesting-season-in-florida` | `"Memories From The Havens"` · `Sea Turtle Nesting Season in Florida` | **the post title**; demote the blog-header one |
-| `/local-attractions-melbourne-beach` | `Things to Do Near Melbourne Beach & Indialantic` + two empty `<h1>`s | the real one; the empty ones are stray zero-width-space text elements — demote or delete |
-| `/stay-near-brevard-zoo-melbourne-beach-house` | five extras incl. `🦒 Stay Near The Brevard Zoo…`, `🐾 Why Visit Brevard Zoo?`, `📍 Convenient Location…` and two empty | keep `🦒 Stay Near The Brevard Zoo…`; the rest become `<h2>` |
+Re-measured live as Googlebot-smartphone **after** Tasks 1a/1b, by parsing real
+`<h1>…</h1>` element pairs rather than grepping substrings. These counts are
+current, not derived from the pre-fix desktop snapshot:
+
+| Page | `<h1>` now | Keep as `<h1>` | Demote to `<h2>` |
+|---|---:|---|---|
+| `/guest-blog` | **2** | `"Memories From The Havens"` | `Enjoy stories from other guests who have stayed at The Florida Havens.` |
+| `/post/sea-turtle-nesting-season-in-florida` | **2** | **`Sea Turtle Nesting Season in Florida`** — the post title | `"Memories From The Havens"` (blog-section header) |
+| `/local-attractions-melbourne-beach` | not re-measured (throttled) | `Things to Do Near Melbourne Beach & Indialantic` | the rest, incl. **empty / zero-width-space** `<h1>`s — demote or delete outright |
+| `/stay-near-brevard-zoo-melbourne-beach-house` | not re-measured (throttled) | `🦒 Stay Near The Brevard Zoo in Melbourne, Florida` | `🐾 Why Visit Brevard Zoo?`, `📍 Convenient Location Near Our Properties`, plus empty ones |
+
+Note `/guest-blog` came back as **2**, not the 3 an earlier `grep`-based count
+suggested — see the counting caveat above. **Open each page and report the count
+you actually see**; do not force it to match this table. The last two rows in
+particular are pre-fix figures.
+
+Use `SEO & accessibility → Choose HTML tag` for every one of these. Empty
+zero-width-space `<h1>`s are stray text elements with no content — deleting them
+is cleaner than demoting them, but either removes the defect.
 
 ## 1c. Publish, then verify on the LIVE site
 
@@ -381,6 +407,20 @@ hard-reload, and in DevTools console run:
 server-rendered HTML whether the hamburger is open or closed — that is how they
 were counted in the first place, from a plain `curl` with no JavaScript. A
 collapsed menu is hidden by CSS, not absent from the DOM.
+
+> ### Verification hygiene — three ways a check lies to you
+>
+> 1. **Wait for hydration.** A DOM query run immediately after navigation can
+>    return `[]` on a page that is actually correct — observed on `/sea-haven`,
+>    where a re-check seconds later showed the `H1` fine. **An empty result right
+>    after navigating is not a failure.** Re-run before believing it.
+> 2. **Count in the DOM, not with `grep`.** `curl … | grep -o '<h1' | wc -l`
+>    counts raw substrings, and Wix inlines page content as JSON, so `<h1` can
+>    appear inside a `<script>` blob and inflate the count. On `/guest-blog` that
+>    method reported **3** where real parsed elements were **2**.
+>    `document.querySelectorAll('h1').length` is DOM truth — prefer it, and
+>    treat any `grep`-derived count as an upper bound.
+> 3. **Never trust the editor panel** — see the stale-panel trap above.
 
 Expect `P 35px ...` — tag changed, size preserved. If it reports `H1`, the style
 change did not take; if it reports `P 16px`, the restore did not take.
