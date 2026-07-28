@@ -5,14 +5,17 @@ import { useState } from 'react'
 /**
  * Third-party embed that loads only on an explicit click.
  *
- * Same reasoning as components/BookingMount.tsx: the live site injects its
- * embeds through Wix HtmlComponent, so they cost the page on every visit and are
- * not first-class indexable content. Here the surrounding copy renders
- * immediately and the frame is fetched only if the visitor asks for it.
+ * The live site injects its embeds through Wix HtmlComponent, so they cost the
+ * page on every visit and are not first-class indexable content. Here the
+ * surrounding copy renders immediately and the frame is fetched only if the
+ * visitor asks for it.
  *
- * Used for the virtual tour. Kept separate from BookingMount because the booking
- * flow has its own trust content and copy, and because a CI invariant asserts
- * /book/* ships no eager iframe — worth not entangling the two.
+ * Used for the virtual tour only. The booking flow went further and dropped the
+ * iframe entirely (components/BookingCta.tsx) — a CI invariant now asserts
+ * /book/* ships no iframe at all. A tour cannot do the same: unlike a booking
+ * engine there is no page to hand the visitor off to, because the embed *is* the
+ * experience. Click-to-load is the right compromise here, not a weaker version
+ * of the booking fix.
  *
  * When `src` is undefined it renders an explicit placeholder rather than nothing,
  * so a missing integration is visible instead of silently absent.

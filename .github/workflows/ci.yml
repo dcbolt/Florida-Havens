@@ -100,11 +100,36 @@ jobs:
             esac
           done
 
-          # The booking widget must not be in the initial HTML.
-          if curl -sS http://127.0.0.1:3111/book/turtle-haven | grep -q '<iframe'; then
-            echo "::error::/book/turtle-haven ships an eager iframe; the widget must mount on click"
+          # Booking routes must ship NO iframe at all. Strengthened 2026-07-27
+          # when the embed was replaced by a deep link to Guesty (Option A): the
+          # live equivalent transferred 12,906 KiB at a 27.4 s mobile LCP for a
+          # surface no crawler could read. The gate used to allow a click-mounted
+          # iframe; there is no longer any reason for one to exist here.
+          for bp in /book/turtle-haven /book/the-dunes /book/the-florida-havens; do
+            if curl -sS "http://127.0.0.1:3111$bp" | grep -q '<iframe'; then
+              echo "::error::$bp ships an iframe; booking must deep-link to Guesty, not embed it"
+              fail=1
+            fi
+          done
+
+          # The booking CTA must be in the server HTML — the whole point of
+          # dropping the embed. Either the real date form or the enquiry
+          # fallback, never an empty container.
+          #
+          # Matched on attributes, not visible text: React splits adjacent text
+          # nodes in SSR output, so "Call 321-209-0495" arrives as two separate
+          # nodes and a literal grep for it fails on a page that is correct.
+          for bp in /book/turtle-haven /book/the-dunes /book/the-florida-havens; do
+            cta=$(curl -sS "http://127.0.0.1:3111$bp")
+            if printf '%s' "$cta" | grep -q 'method="get"'; then
+              continue                                  # live Guesty deep-link form
+            fi
+            if printf '%s' "$cta" | grep -q 'href="tel:+13212090495"'; then
+              continue                                  # enquiry fallback
+            fi
+            echo "::error::$bp has neither a booking form nor a phone fallback in server HTML"
             fail=1
-          fi
+          done
 
           # Rocket-launch demand content must not be redirected to the guest
           # portal. Regression guard for the /beach-street-shuttle-launches bug.

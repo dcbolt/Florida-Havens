@@ -82,10 +82,11 @@ app/
   robots.ts sitemap.ts  generated from the content model
 components/
   SiteHeader.tsx        nav as <nav>, NOT <h1>  ← the critical fix
-  BookingMount.tsx      booking widget, mounted on click
+  BookingCta.tsx        booking deep-link to Guesty — no iframe, no JS
   JsonLd.tsx            LodgingBusiness / VacationRental / FAQPage / Breadcrumb
 content/
   site.ts               brand facts — single source for the phone number
+  booking.ts            Guesty deep-link config + listing IDs (Option A)
   properties.ts         6 properties — editorial copy only, no countable facts
   property-facts.ts     occupancy/bedrooms/baths/locality + WELCOME copy (generated)
   faqs.ts               21 Q&As lifted from the live /faqs
@@ -113,7 +114,7 @@ data/
 | No structured data | LodgingBusiness, VacationRental, FAQPage, BreadcrumbList | `components/JsonLd.tsx` |
 | Host's cell as the public phone | one constant, read everywhere | `content/site.ts` |
 | ~1 MB HTML | static prerender, no hydration dump | framework default |
-| Client-injected booking iframe | trust content first, widget on click | `components/BookingMount.tsx` |
+| Client-injected booking iframe | deep-link to Guesty; no embed at all | `components/BookingCta.tsx` |
 | PNG/JPG heroes | AVIF/WebP + explicit dimensions | `next/image` + `next.config.ts` |
 | Guest-ops pages indexed | 301 to the guest portal | `content/url-matrix.ts` |
 | Empty `alt` on heroes | `heroAlt` required per property | `content/properties.ts` |
@@ -139,8 +140,11 @@ appearing on 5+ of the fetched pages is treated as site chrome and dropped.
 
 ## Still needed
 
-- **Guesty listing IDs / widget URLs** → wire `BookingMount`'s `embedUrl`.
-  Until then it renders an explicit placeholder, not a broken frame.
+- **Guesty booking-engine URL + the six listing IDs** → set them in
+  `content/booking.ts` and every book page gains a live date form. Until then
+  each renders a phone/email enquiry fallback, never a dead booking button.
+  The engine's real query-parameter names need confirming at the same time —
+  see the header note in that file.
 - **Turtle Haven's virtual tour embed URL** → set `virtualTourUrl` in
   `content/properties.ts`. Not recoverable from the live HTML: like the booking
   widget it is injected client-side by a Wix HtmlComponent, so no provider URL
@@ -151,6 +155,6 @@ appearing on 5+ of the fetched pages is treated as site chrome and dropped.
   with real guest first names and cities. Deliberately **not** migrated:
   republishing attributed personal content on a new domain needs sign-off first.
   Everything else from those pages is migrated.
-- **Search Console + GA4 access** — no ranking or conversion claim is made
-  anywhere in this repo without it.
-- **PSI mobile baseline** on the live site before the Wix P0 fixes land.
+- **GA4 access** — no conversion claim is made anywhere in this repo without it.
+  Search Console is no longer blocking: the baseline is captured in
+  [`docs/BASELINE-2026-07-26.md`](docs/BASELINE-2026-07-26.md).

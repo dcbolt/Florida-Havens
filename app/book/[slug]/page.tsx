@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 import { PROPERTIES, getProperty } from '@/content/properties'
-import { BookingMount } from '@/components/BookingMount'
+import { BookingCta } from '@/components/BookingCta'
 import { BreadcrumbJsonLd } from '@/components/JsonLd'
 import { SITE } from '@/content/site'
 
@@ -15,8 +15,9 @@ import { SITE } from '@/content/site'
  * booking widget is injected client-side by a Wix HtmlComponent, so there is
  * nothing above it for a guest (or a crawler) to read while it loads.
  *
- * This route inverts that: real trust content renders first and the widget
- * mounts on demand (see components/BookingMount.tsx).
+ * This route inverts that: real trust content renders first, and the booking
+ * step is a deep link to Guesty rather than an embed at all — no iframe, no
+ * client JS. See components/BookingCta.tsx and content/booking.ts.
  */
 export const dynamicParams = false
 
@@ -158,12 +159,12 @@ export default async function BookPage({
 
         <div className="mt-10">
           {/*
-            embedUrl is intentionally undefined until Devin supplies the Guesty
-            listing IDs / widget URLs (tracked under "Access needed" in
-            docs/TFH-WEBSITE.md). The component renders an explicit placeholder
-            rather than a broken frame.
+            Option A — deep-link out. No iframe, no client JS: a plain GET form
+            whose action is the Guesty listing URL. Until GUESTY.baseUrl and the
+            listing IDs are set in content/booking.ts, this renders the phone and
+            email fallback rather than a dead booking button.
           */}
-          <BookingMount propertyName={target.name} />
+          <BookingCta propertyName={target.name} slug={slug} />
         </div>
 
         <p className="mt-8 text-sm text-neutral-600">
