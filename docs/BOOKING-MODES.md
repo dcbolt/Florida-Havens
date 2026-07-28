@@ -53,15 +53,68 @@ one redeploy, and the site is back to exactly the behaviour that shipped in
 
 ---
 
+## ⚠ Read this before creating credentials: the token quota
+
+**Guesty allows only 5 access-token requests per key per 24 hours.** Tokens
+themselves last ~24h. This is a daily quota, not a rate limit — spend it and the
+key is unusable until the window rolls.
+
+Two rules follow, and both matter more than anything else on this page.
+
+### Do not reuse Media Haven's Guesty key here
+
+The quota is **per key**. Media Haven already runs an OAuth application against
+this account (`MEDIA HAVEN`, powering the guest portal), and it holds the same
+5-per-day budget. If the marketing site shares that key, a bad deploy here spends
+Media Haven's budget and **takes the guest portal's Guesty access down for up to
+24 hours**.
+
+It is also the wrong direction on two other counts: this site needs **read-only**
+scope where the portal needs more, and the marketing site must not couple to Stay
+OS infrastructure.
+
+**Issue a separate, read-only OAuth application for the marketing site.**
+
+### The token is cached across invocations, not per request
+
+`lib/guesty.ts` caches the token with `unstable_cache` for 23 hours, in the same
+incremental cache the framework uses for data — shared across invocations and
+regions, so this works out to roughly **one token request per day**.
+
+This is worth understanding rather than trusting, because the naive version looks
+correct and passes every test: a process-local cache mints a fresh token on every
+**cold start**, and with a 15-minute ISR window over six listings that is dozens
+of requests a day. This client had exactly that bug until media-haven's
+`lib/guesty.ts` — which solves the same problem with a Supabase-backed token
+table — was read.
+
+`mintToken` also refuses after a small number of attempts per process, so a retry
+bug cannot quietly spend a day's budget. That cap is asserted in the test suite.
+
+**A 401/403 does not trigger a re-mint.** Retrying auth failures is precisely how
+the quota gets burned, so the client logs and falls back to Option A instead.
+Recovering from a rotated or revoked credential therefore needs either a redeploy
+or `revalidateTag('guesty:token')` — the tag is in place, the route handler to
+call it is not built.
+
+---
+
 ## Turning it on
 
 1. In Guesty: **Integrations → OAuth Applications → New Application**. Scope it
-   **read-only**. This client only issues GETs, and a token that cannot write
-   cannot damage a live PMS.
+   **read-only** — this client only issues GETs, and a token that cannot write
+   cannot damage a live PMS. **Do not reuse the `MEDIA HAVEN` application.**
 2. Set `GUESTY_CLIENT_ID` and `GUESTY_CLIENT_SECRET` in the deployment
    environment. **Never in this repo** — no `.env` file, no commit, no pasting
    into an agent chat or the cross-agent log.
 3. Deploy, then check the first booking page and the logs.
+
+> **Both modes take effect on deploy, not instantly.** Booking pages are
+> prerendered with `revalidate = 900`, so the mode is decided when a page is
+> generated. Setting or clearing `BOOKING_MODE` needs a redeploy to apply
+> everywhere — verified by building with valid credentials *and*
+> `BOOKING_MODE=deeplink`, which correctly produced no panel and a working
+> deep-link form. Without a redeploy, existing pages flip as they revalidate.
 
 ### Verify it before trusting it
 

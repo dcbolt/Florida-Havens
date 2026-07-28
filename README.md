@@ -88,7 +88,8 @@ components/
   BookingCta.tsx        booking deep-link to Guesty — no iframe, no JS
   AvailabilityPanel.tsx live availability/rates; renders null → falls back to A
 lib/
-  guesty.ts             Guesty Open API client; never throws, null on any failure
+  guesty-api.ts         Guesty transport/parsing — no framework imports, unit-tested
+  guesty.ts             adds the cross-invocation token cache (5 tokens/key/24h)
   JsonLd.tsx            LodgingBusiness / VacationRental / FAQPage / Breadcrumb
 content/
   site.ts               brand facts — single source for the phone number

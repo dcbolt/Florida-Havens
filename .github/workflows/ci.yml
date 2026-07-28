@@ -44,6 +44,12 @@ jobs:
       # and the freshness gate compared against a pre-fetch clock, which made the
       # measured age negative and never expired anything.
       - name: Assert booking falls back to deep-link on every Guesty failure
+        # GUESTY_MAX_MINTS lifts the token-mint cap for the suite only: it walks
+        # many credential scenarios in one process and each must really
+        # re-authenticate. Never set this in a deployment — the cap is what stops
+        # a retry bug spending Guesty's 5-tokens-per-key-per-24h quota.
+        env:
+          GUESTY_MAX_MINTS: '99'
         run: npm run test:booking
 
       # The site publishes an accessibility statement, so contrast is a stated

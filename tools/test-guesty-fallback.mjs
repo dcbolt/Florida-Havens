@@ -56,9 +56,29 @@ const server = createServer((req, res) => {
 await new Promise((r) => server.listen(PORT, '127.0.0.1', r))
 
 // Imported after the env is set, so the module reads the overrides.
-const { getAvailability, getFreshAvailability, isConfigured } = await import(
-  '../lib/guesty.ts'
-)
+//
+// This targets lib/guesty-api.ts, not lib/guesty.ts. The api layer has no
+// framework imports, so it runs in plain Node — which is the point of the split.
+// lib/guesty.ts adds only the unstable_cache token wrapper, and caching a token
+// is precisely what this suite must NOT do: it needs every credential scenario to
+// hit the token endpoint for real.
+const { getAvailability, getFreshAvailability, isConfigured, mintToken } =
+  await import('../lib/guesty-api.ts')
+
+/**
+ * Uncached token provider. Production passes a cross-invocation cached one
+ * because Guesty allows only 5 token requests per key per 24h; here we want the
+ * opposite, so each scenario re-authenticates.
+ */
+const tokenProvider = async () => {
+  if (!isConfigured()) return null
+  try {
+    const { token } = await mintToken()
+    return token
+  } catch {
+    return null
+  }
+}
 
 let failures = 0
 const check = (name, fn) => {
@@ -78,7 +98,7 @@ const call = async (m) => {
   // an earlier scenario — which is exactly the hole that hid the bad-credential
   // path on the first run of this suite.
   process.env.GUESTY_CLIENT_ID = `test-id-${m}`
-  return getAvailability('LISTING1', '2026-08-01', '2026-08-04')
+  return getAvailability(tokenProvider, 'LISTING1', '2026-08-01', '2026-08-04')
 }
 
 console.log('\nHealthy responses parse:')
@@ -125,17 +145,41 @@ check(`bounded by the 8s timeout (took ${elapsed}ms)`, () =>
 console.log('\nFreshness gate:')
 mode = 'ok'
 process.env.GUESTY_CLIENT_ID = 'test-id-fresh'
-const fresh = await getFreshAvailability('LISTING1', 60, 6 * 3600_000)
+const fresh = await getFreshAvailability(tokenProvider, 'LISTING1', 60, 6 * 3600_000)
 check('fresh data passes', () => assert.ok(fresh))
-const stale = await getFreshAvailability('LISTING1', 60, -1)
+const stale = await getFreshAvailability(tokenProvider, 'LISTING1', 60, -1)
 check('data older than maxAge is rejected', () => assert.equal(stale, null))
+
+console.log('\nToken-quota guard:')
+// Guesty allows only 5 token requests per key per 24h, so mintToken refuses to
+// keep trying. Without this cap a retry bug would spend a quota that takes a
+// full day to recover. The suite itself raises the cap via GUESTY_MAX_MINTS,
+// so assert the guard by exhausting whatever it is set to.
+{
+  process.env.GUESTY_CLIENT_ID = 'test-id-quota'
+  mode = 'bad-credentials'
+  let refused = false
+  for (let i = 0; i < 120; i += 1) {
+    try {
+      await mintToken()
+    } catch (e) {
+      if (String(e.message).includes('refusing to mint')) {
+        refused = true
+        break
+      }
+    }
+  }
+  check('mintToken eventually refuses rather than spending the quota', () =>
+    assert.equal(refused, true),
+  )
+}
 
 console.log('\nConfiguration gate:')
 delete process.env.GUESTY_CLIENT_SECRET
 check('unconfigured → isConfigured() false', () =>
   assert.equal(isConfigured(), false),
 )
-const unconf = await getAvailability('LISTING1', '2026-08-01', '2026-08-04')
+const unconf = await getAvailability(tokenProvider, 'LISTING1', '2026-08-01', '2026-08-04')
 check('unconfigured → null without any request', () =>
   assert.equal(unconf, null),
 )
