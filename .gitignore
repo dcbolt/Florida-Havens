@@ -8,3 +8,8 @@ build/
 *.tsbuildinfo
 next-env.d.ts
 .vercel
+
+# Guesty API credentials are environment-only — never committed.
+.env
+.env.*
+!.env.example

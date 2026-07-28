@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 import { PROPERTIES, getProperty } from '@/content/properties'
+import { AvailabilityPanel } from '@/components/AvailabilityPanel'
 import { BookingCta } from '@/components/BookingCta'
 import { BreadcrumbJsonLd } from '@/components/JsonLd'
 import { SITE } from '@/content/site'
@@ -20,6 +21,17 @@ import { SITE } from '@/content/site'
  * client JS. See components/BookingCta.tsx and content/booking.ts.
  */
 export const dynamicParams = false
+
+/**
+ * ISR window for booking Option B.
+ *
+ * In deep-link mode nothing on this route reads live data, so the page is
+ * prerendered once and this value costs nothing — a regeneration produces byte
+ * identical output. In live mode it bounds how stale the availability panel can
+ * be, and it matches AVAILABILITY_REVALIDATE_SECONDS so the page and the data
+ * underneath it expire together rather than the page pinning an older fetch.
+ */
+export const revalidate = 900
 
 const BRAND_SLUG = 'the-florida-havens'
 
@@ -164,7 +176,15 @@ export default async function BookPage({
             listing IDs are set in content/booking.ts, this renders the phone and
             email fallback rather than a dead booking button.
           */}
-          <BookingCta propertyName={target.name} slug={slug} />
+          {/*
+            Option B renders above Option A, never instead of it. The panel
+            returns null in deep-link mode and on any Guesty failure, leaving
+            exactly the page that shipped before B existed.
+          */}
+          <div className="space-y-6">
+            <AvailabilityPanel slug={slug} />
+            <BookingCta propertyName={target.name} slug={slug} />
+          </div>
         </div>
 
         <p className="mt-8 text-sm text-neutral-600">

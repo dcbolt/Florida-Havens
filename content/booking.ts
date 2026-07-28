@@ -108,6 +108,37 @@ export const GUESTY_LISTINGS: Record<string, GuestyListing> = {
   'beach-street': { id: '693090811221b20010f4b2f2', minNights: 5 },
 }
 
+/**
+ * ── OPTION A vs OPTION B ───────────────────────────────────────────────────
+ *
+ * These are layers, not alternatives. **Option A is always the substrate**: the
+ * deep-link form is what takes the guest to checkout in both modes. Option B
+ * adds a server-rendered availability and pricing panel *above* it, so turning B
+ * off removes a panel rather than breaking a flow.
+ *
+ * That is the whole rollback story, and it has three levels:
+ *
+ * | Level | Trigger | Effect |
+ * |---|---|---|
+ * | Automatic | any Guesty API failure — bad token, 429, timeout, unknown shape | that page renders A |
+ * | Environment | `GUESTY_CLIENT_ID` / `GUESTY_CLIENT_SECRET` unset | whole site renders A, no requests made |
+ * | **Kill switch** | `BOOKING_MODE=deeplink` | whole site renders A **even with valid credentials** |
+ *
+ * The kill switch wins over everything on purpose. If live availability is
+ * showing something wrong, the fix must not require finding and revoking a
+ * credential under pressure — set one variable, redeploy, and the site is back
+ * to the behaviour that shipped in `cf06954`.
+ */
+export type BookingMode = 'live' | 'deeplink'
+
+export function bookingMode(): BookingMode {
+  if (process.env.BOOKING_MODE === 'deeplink') return 'deeplink'
+  if (!process.env.GUESTY_CLIENT_ID || !process.env.GUESTY_CLIENT_SECRET) {
+    return 'deeplink'
+  }
+  return 'live'
+}
+
 export type BookingDeepLink = {
   /** Listing URL with no dates — the form's `action`. */
   action: string

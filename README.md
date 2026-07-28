@@ -26,6 +26,7 @@ In-stay guest content (TV, portal, Wi-Fi, laundry, check-in, house manuals) is
 | [`docs/GUESTY-RECON-BRIEF.md`](docs/GUESTY-RECON-BRIEF.md) | Paste-ready **read-only** brief for an agent in the Guesty dashboard — the facts that switch booking on |
 | [`docs/AUDIT.md`](docs/AUDIT.md) | Measured audit of the live Wix site — 13 findings, severity-ranked, with evidence |
 | [`docs/WIX-P0-CHECKLIST.md`](docs/WIX-P0-CHECKLIST.md) | Click-by-click fixes for the **live Wix site**, independent of this rebuild |
+| [`docs/BOOKING-MODES.md`](docs/BOOKING-MODES.md) | Live Guesty availability, how to turn it on, and the three ways to roll it back |
 | [`docs/URL-MATRIX.md`](docs/URL-MATRIX.md) | All 77 live URLs classified keep / redirect / retire |
 
 Cross-agent coordination lives in `docs/TFH-WEBSITE.md` in the
@@ -69,6 +70,7 @@ npm install
 npm run dev      # http://localhost:3000
 npm run build    # all routes prerender; 37 static pages
 npm run lint
+npm run test:booking   # Guesty fallback suite — no network, no credentials
 ```
 
 ## Layout
@@ -84,10 +86,13 @@ app/
 components/
   SiteHeader.tsx        nav as <nav>, NOT <h1>  ← the critical fix
   BookingCta.tsx        booking deep-link to Guesty — no iframe, no JS
+  AvailabilityPanel.tsx live availability/rates; renders null → falls back to A
+lib/
+  guesty.ts             Guesty Open API client; never throws, null on any failure
   JsonLd.tsx            LodgingBusiness / VacationRental / FAQPage / Breadcrumb
 content/
   site.ts               brand facts — single source for the phone number
-  booking.ts            Guesty deep-link config + listing IDs (Option A)
+  booking.ts            Guesty deep-link config, listing IDs, mode switch
   properties.ts         6 properties — editorial copy only, no countable facts
   property-facts.ts     occupancy/bedrooms/baths/locality + WELCOME copy (generated)
   faqs.ts               21 Q&As lifted from the live /faqs
@@ -103,6 +108,7 @@ tools/
   backup-live-site.py   content snapshot of every sitemap URL
   fill-snapshot-gaps.py re-fetches URLs a snapshot lost to throttling
   weigh.py              per-page subresource weight measurement
+  test-guesty-fallback.mjs  proves every Guesty failure degrades to Option A
 data/
   pages.json            raw crawl output (evidence)
 ```

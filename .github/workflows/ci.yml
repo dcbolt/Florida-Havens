@@ -32,6 +32,20 @@ jobs:
       - name: Build
         run: npm run build
 
+      # Booking Option B (live Guesty availability) is only safe because every
+      # failure returns null and the page falls back to the Option A deep link.
+      # This suite stands up a fake Guesty and asserts that property for bad
+      # credentials, 401/403, 429, 5xx, unknown payload shapes, empty calendars,
+      # timeouts, stale caches and missing configuration. It needs no network and
+      # no credentials.
+      #
+      # Two real bugs were found the first time it ran: the token cache was not
+      # keyed by client id, so a rotated credential kept replaying the old token,
+      # and the freshness gate compared against a pre-fetch clock, which made the
+      # measured age negative and never expired anything.
+      - name: Assert booking falls back to deep-link on every Guesty failure
+        run: npm run test:booking
+
       # The site publishes an accessibility statement, so contrast is a stated
       # commitment. The brand gold (#c0a91e) is 2.35:1 on white and was being
       # used on the required-field asterisks.
@@ -133,6 +147,15 @@ jobs:
               fail=1
             fi
           done
+
+          # CI has no Guesty credentials, so the site must be in deep-link mode
+          # and the availability panel must be entirely absent. If this fires,
+          # Option B has started rendering without configuration — which means
+          # it could also render stale or wrong availability somewhere.
+          if curl -sS http://127.0.0.1:3111/book/turtle-haven | grep -q 'Next 60 nights'; then
+            echo "::error::availability panel rendered without Guesty credentials"
+            fail=1
+          fi
 
           brand=$(curl -sS http://127.0.0.1:3111/book/the-florida-havens)
           if ! printf '%s' "$brand" | grep -q 'href="tel:+13212090495"'; then
