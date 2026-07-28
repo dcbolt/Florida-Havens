@@ -119,17 +119,30 @@ jobs:
           # Matched on attributes, not visible text: React splits adjacent text
           # nodes in SSR output, so "Call 321-209-0495" arrives as two separate
           # nodes and a literal grep for it fails on a page that is correct.
-          for bp in /book/turtle-haven /book/the-dunes /book/the-florida-havens; do
-            cta=$(curl -sS "http://127.0.0.1:3111$bp")
-            if printf '%s' "$cta" | grep -q 'method="get"'; then
-              continue                                  # live Guesty deep-link form
+          #
+          # All six properties have a verified Guesty listing, so each must ship a
+          # real deep-link form. The brand route has no combined listing in the
+          # account — confirmed, there is no "all four houses" listing — so it must
+          # ship the enquiry fallback instead. Asserting the specific one each page
+          # should have, rather than "either", is what catches a listing ID going
+          # missing and silently degrading a bookable house to a phone number.
+          for bp in turtle-haven shell-haven beach-haven sea-haven the-dunes beach-street; do
+            cta=$(curl -sS "http://127.0.0.1:3111/book/$bp")
+            if ! printf '%s' "$cta" | grep -q 'action="https://[a-z]*\.guestybookings\.com/en/properties/[0-9a-f]\{24\}"'; then
+              echo "::error::/book/$bp has no Guesty deep-link form; a bookable house must not fall back to enquiry"
+              fail=1
             fi
-            if printf '%s' "$cta" | grep -q 'href="tel:+13212090495"'; then
-              continue                                  # enquiry fallback
-            fi
-            echo "::error::$bp has neither a booking form nor a phone fallback in server HTML"
-            fail=1
           done
+
+          brand=$(curl -sS http://127.0.0.1:3111/book/the-florida-havens)
+          if ! printf '%s' "$brand" | grep -q 'href="tel:+13212090495"'; then
+            echo "::error::/book/the-florida-havens must show the enquiry fallback — no combined Guesty listing exists"
+            fail=1
+          fi
+          if printf '%s' "$brand" | grep -q 'guestybookings\.com'; then
+            echo "::error::/book/the-florida-havens links to a single listing; that would book one house, not the group"
+            fail=1
+          fi
 
           # Rocket-launch demand content must not be redirected to the guest
           # portal. Regression guard for the /beach-street-shuttle-launches bug.

@@ -1,4 +1,5 @@
 import { bookingDeepLink } from '@/content/booking'
+import { PROPERTY_FACTS } from '@/content/property-facts'
 import { SITE } from '@/content/site'
 
 /**
@@ -31,6 +32,7 @@ export function BookingCta({
   slug: string
 }) {
   const link = bookingDeepLink(slug)
+  const sleeps = PROPERTY_FACTS[slug]?.sleeps
 
   // No Guesty listing for this property yet — or it is a multi-home campus that
   // cannot be booked as a single listing. Enquiry is the honest path; a dead
@@ -66,7 +68,7 @@ export function BookingCta({
     )
   }
 
-  const { action, params } = link
+  const { action, params, minNights } = link
 
   return (
     <div className="rounded-sm border border-black/10 bg-sand-50 p-6">
@@ -74,7 +76,14 @@ export function BookingCta({
         Check dates for {propertyName}
       </h2>
       <p className="mt-2 text-sm text-neutral-600">
-        Book direct for our best available rate — no platform service fee.
+        Book direct for our best available rate — no platform service fee.{' '}
+        {/* Stay rules stated before the guest leaves for the engine. Bouncing
+            off a minimum-nights error on someone else's domain is a worse
+            experience than knowing up front, and it costs us nothing to say. */}
+        <span className="text-neutral-500">
+          {minNights}-night minimum
+          {sleeps ? `, sleeps up to ${sleeps}` : ''}.
+        </span>
       </p>
 
       <form
@@ -124,8 +133,12 @@ export function BookingCta({
           <input
             id={`${slug}-guests`}
             type="number"
-            name={params.guests}
+            name={params.adults}
             min={1}
+            /* Capped at the listing's real occupancy — no point letting someone
+               request 12 guests for a house that sleeps 6 and find out on
+               Guesty's domain. */
+            max={sleeps}
             defaultValue={2}
             className="mt-1 w-20 rounded-sm border border-black/15 bg-white px-3 py-2 text-sm text-neutral-800"
           />

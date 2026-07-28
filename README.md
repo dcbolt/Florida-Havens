@@ -141,15 +141,18 @@ appearing on 5+ of the fetched pages is treated as site chrome and dropped.
 
 ## Still needed
 
-- **Guesty booking-engine URL + the six listing IDs** → set them in
-  `content/booking.ts` and every book page gains a live date form. Until then
-  each renders a phone/email enquiry fallback, never a dead booking button.
-  The engine's real query-parameter names need confirming at the same time —
-  see the header note in that file.
+- **A decision on Beach Street's booking mode.** Guesty has three booking
+  engines: the brand engine instant-books all six listings, but a second engine
+  is configured **inquiry-only** for Beach Haven, Sea Haven and Beach Street.
+  Those two settings contradict each other. All six currently route to the brand
+  engine and instant-book; flipping the three to inquiry is a one-line change in
+  `content/booking.ts`. See the note there.
 - **Turtle Haven's virtual tour embed URL** → set `virtualTourUrl` in
   `content/properties.ts`. Not recoverable from the live HTML: like the booking
   widget it is injected client-side by a Wix HtmlComponent, so no provider URL
-  exists in the server response. `/turtle-haven-virtual-tour` 301s to the
+  exists in the server response. **Not in Guesty either** — checked 2026-07-27
+  across listing details, amenities, custom fields, all three description
+  variants and photos. Whoever built the tour has the link. `/turtle-haven-virtual-tour` 301s to the
   property page, which shows an explicit "not yet connected" note so arrivals
   from that search are not silently disappointed.
 - **Guest testimonials** — the six property pages carry `GUEST FEEDBACK` quotes
