@@ -99,15 +99,108 @@ call it is not built.
 
 ---
 
-## Turning it on
+## Turning it on — creating the OAuth application
 
-1. In Guesty: **Integrations → OAuth Applications → New Application**. Scope it
-   **read-only** — this client only issues GETs, and a token that cannot write
-   cannot damage a live PMS. **Do not reuse the `MEDIA HAVEN` application.**
-2. Set `GUESTY_CLIENT_ID` and `GUESTY_CLIENT_SECRET` in the deployment
-   environment. **Never in this repo** — no `.env` file, no commit, no pasting
-   into an agent chat or the cross-agent log.
-3. Deploy, then check the first booking page and the logs.
+### 1. Create it in Guesty
+
+**Integrations → OAuth Applications** (confirmed at
+`app.guesty.com/integrations/oauth-apps`, page titled *Open API*) →
+**New Application**.
+
+**Do not open or edit `MEDIA HAVEN`.** That is the guest portal's application and
+it must keep its own token budget.
+
+Name it so the two can never be confused six months from now:
+
+| Field | Value |
+|---|---|
+| Name | `TFH Marketing Site (read-only)` |
+| Description | `Availability + rates for thefloridahavens.com booking pages. Read-only.` |
+
+### 2. Scopes — read-only, and only what is used
+
+This client issues **GETs only**. A token that cannot write cannot damage a live
+PMS, and the marketing site has no business being able to.
+
+What it actually needs:
+
+- **listings** — read
+- **availability / calendar / pricing** — read
+
+What it must **not** be granted, even if offered as a convenient bundle:
+
+- reservations — **write** (this is the one that could create or alter bookings)
+- guests / guest data — anything
+- payments or payouts — anything
+- webhooks, users, accounts — anything
+
+I have not seen this screen, so I cannot name Guesty's exact scope strings.
+**Report what the picker offers** and grant the narrowest read set covering
+listings and calendar. If it only offers a single all-or-nothing scope, say so
+before accepting it — that is a decision worth making deliberately rather than
+clicking through.
+
+### 3. The secret is shown once
+
+Guesty displays the client secret **once, at creation**. Copy it straight into a
+password manager.
+
+**Do not paste it into a chat with me, into the browser agent, into
+`docs/TFH-WEBSITE.md`, or into any file in either repo.** The cross-agent log is
+a shared document in git. If it lands somewhere it should not, treat it as
+compromised: delete the application in Guesty and create a new one.
+
+### 4. Set the environment variables — production only
+
+In Vercel → the project → **Settings → Environment Variables**:
+
+| Variable | Value | Environments |
+|---|---|---|
+| `GUESTY_CLIENT_ID` | from Guesty | **Production only** |
+| `GUESTY_CLIENT_SECRET` | from Guesty | **Production only** |
+
+**Production only is deliberate, not laziness.** Preview deployments regenerate
+pages too, so credentials on Preview would draw from the same 5-tokens-per-day
+budget as Production — every PR preview competing with the live site for a quota
+that takes 24 hours to recover. Preview also has no business showing live
+availability on a shareable URL.
+
+Leaving them unset on Preview puts previews in `deeplink` mode automatically. If
+you would rather be explicit, add `BOOKING_MODE=deeplink` scoped to Preview.
+
+### 5. Deploy and verify
+
+Redeploy — the mode is decided when a page is generated, so this does not take
+effect until a build runs.
+
+Then, on a booking page such as `/book/turtle-haven`:
+
+| What you see | Meaning |
+|---|---|
+| A **"Next 60 nights"** panel above the date form | working |
+| No panel, date form still there | fell back to Option A — **check the logs**, this is the designed symptom of a wrong endpoint or scope |
+| Anything broken | should be impossible; the panel is additive. Set `BOOKING_MODE=deeplink` and tell me |
+
+Check the deployment logs for lines beginning `[guesty]`. There should be none.
+If there are:
+
+| Log line | Cause |
+|---|---|
+| `token unavailable: token request failed: 401` | wrong client id/secret |
+| `token unavailable: token request failed: 403` | scopes too narrow, or app not approved |
+| `unrecognised calendar shape` | the calendar returned something we do not parse — most likely remaining unknown |
+| `calendar 404` | wrong path |
+| `calendar 401/403 … token rejected` | scopes exclude calendar reads |
+| `refusing to mint` | the per-process cap tripped; means something is retrying. Tell me |
+
+### 6. Tell me two things afterwards
+
+1. **Whether the panel appeared**, and any `[guesty]` log lines verbatim.
+2. **Whether a nightly rate showed** — the "from $X a night" clause. That is the
+   last unverified assumption in the client: Media Haven reads only `date` and
+   `status` from the calendar, so nothing yet proves this plan returns `price`.
+   Its absence is harmless and costs one sentence, but I need to know before
+   pricing can go into structured data.
 
 > **Both modes take effect on deploy, not instantly.** Booking pages are
 > prerendered with `revalidate = 900`, so the mode is decided when a page is
